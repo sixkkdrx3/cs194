@@ -2,6 +2,7 @@ package cs194.maaap;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.app.FragmentTransaction;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +28,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        InputDialogFragment f = new InputDialogFragment();
+        f.show(ft,"dialog");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
