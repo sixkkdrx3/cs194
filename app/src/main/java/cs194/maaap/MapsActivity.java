@@ -21,8 +21,6 @@ import com.amazonaws.services.dynamodbv2.model.*;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private BleatAction bleatAction;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +28,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         InputDialogFragment f = new InputDialogFragment();
-        f.show(ft,"dialog");
+        f.show(ft, "dialog");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -56,10 +54,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-        bleatAction = new BleatAction(getApplicationContext());
-        String message = "fuck it";
-        SaveBleat saveBleat = new SaveBleat(bleatAction);
-        saveBleat.execute(message);
     }
 }
