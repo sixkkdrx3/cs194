@@ -55,13 +55,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             mMap.setMyLocationEnabled(true);
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            lat = location.getLatitude();
-            lng = location.getLongitude();
+            if (location != null) {
+                lat = location.getLatitude();
+                lng = location.getLongitude();
+            } else { //default to stanford coordinates
+                lat = 37.43;
+                lng = -122.17;
+            }
         }
         catch(SecurityException se)
         {
-            lat = 37.43; //default to stanford coordinates
-            lng = 122.17;
+            lat = 37.43;
+            lng = -122.17;
         }
         LatLng currentLocation = new LatLng(lat, lng);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 15.0));
