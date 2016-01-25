@@ -3,6 +3,7 @@ package cs194.maaap;
 import android.app.FragmentTransaction;
 import android.location.Criteria;
 import android.location.Location;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addApi(LocationServices.API).build();
         mGoogleApiClient.connect();
 
-        Button button = (Button) findViewById(R.id.bleat_button);
+        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.bleat_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
