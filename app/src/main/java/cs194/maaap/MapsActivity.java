@@ -1,5 +1,6 @@
 package cs194.maaap;
 
+import android.app.FragmentTransaction;
 import android.location.Criteria;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
@@ -38,7 +39,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                InputDialogFragment f = new InputDialogFragment();
+                f.show(ft, "dialog");
             }
         });
     }
