@@ -6,6 +6,8 @@ import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 import com.amazonaws.services.dynamodbv2.model.*;
 import android.content.Context;
+
+import java.util.Calendar;
 import java.util.UUID;
 
 /**
@@ -14,15 +16,17 @@ import java.util.UUID;
 public class BleatAction {
 
     private DynamoDBMapper mapper;
+    double coords[];
 
-    public BleatAction(Context context) {
+    public BleatAction(MapsActivity activity) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                context,
+                activity.getApplicationContext(),
                 "us-east-1:3d4f8ee4-167c-4a7e-922d-8841869a6725", // Identity Pool ID
                 Regions.US_EAST_1 // Region
         );
         AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         mapper = new DynamoDBMapper(ddbClient);
+        coords = activity.getGPS();
     }
 
     public void saveBleat(String message) {
@@ -31,7 +35,8 @@ public class BleatAction {
         Bleat bleat = new Bleat();
         bleat.setMessage(message);
         bleat.setBID(bid);
-
+        bleat.setCoordinates(coords[0], coords[1]);
+        bleat.setTime(Calendar.getInstance().getTimeInMillis());
         mapper.save(bleat);
     }
 }

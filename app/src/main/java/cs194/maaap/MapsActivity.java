@@ -38,8 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         FloatingActionButton button = (FloatingActionButton) findViewById(R.id.bleat_button);
         button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 InputDialogFragment f = new InputDialogFragment();
                 f.show(ft, "dialog");
@@ -51,27 +50,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.d("map", "onMapReady called");
         mMap = googleMap;
-        double lat, lng;
-        try {
-            mMap.setMyLocationEnabled(true);
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (location != null) {
-                lat = location.getLatitude();
-                lng = location.getLongitude();
-            } else { //default to stanford coordinates
-                lat = 37.43;
-                lng = -122.17;
-            }
-        }
-        catch(SecurityException se)
-        {
-            lat = 37.43;
-            lng = -122.17;
-        }
-        LatLng currentLocation = new LatLng(lat, lng);
+        double ret[] = getGPS();
+        LatLng currentLocation = new LatLng(ret[0], ret[1]);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 15.0));
     }
-
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -84,5 +66,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionSuspended(int i) {
         Log.d("map", "connection suspended");
+    }
+
+    protected void sayHi() {
+        Log.d("map", "Hello");
+    }
+
+    protected double[] getGPS() {
+        double[] ret = new double[2];
+        try {
+            mMap.setMyLocationEnabled(true);
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location != null) {
+                ret[0] = location.getLatitude();
+                ret[1] = location.getLongitude();
+            } else { //default to stanford coordinates
+                ret[0] = 37.43;
+                ret[1] = -122.17;
+            }
+        } catch (SecurityException se) {
+            ret[0] = 37.43;
+            ret[1] = -122.17;
+        }
+        return ret;
     }
 }
