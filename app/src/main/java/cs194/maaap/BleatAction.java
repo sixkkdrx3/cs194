@@ -9,6 +9,7 @@ import android.content.Context;
 
 import java.util.Calendar;
 import java.util.UUID;
+import java.util.List;
 
 /**
  * Created by kaidi on 1/24/16.
@@ -38,5 +39,11 @@ public class BleatAction {
         bleat.setCoordinates(coords[0], coords[1]);
         bleat.setTime(Calendar.getInstance().getTimeInMillis());
         mapper.save(bleat);
+    }
+
+    public List<Bleat> getBleats() {
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        PaginatedScanList<Bleat> result = mapper.scan(Bleat.class, scanExpression);
+        return result;
     }
 }

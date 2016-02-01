@@ -1,5 +1,6 @@
 package cs194.maaap;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.location.Criteria;
 import android.location.Location;
@@ -19,6 +20,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.location.LocationManager;
 import android.view.View;
 import android.widget.Button;
+
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
@@ -53,6 +56,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double ret[] = getGPS();
         LatLng currentLocation = new LatLng(ret[0], ret[1]);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 15.0));
+
+        /* begin testing filterBleats */
+        FilterBleats filterBleats = new FilterBleats(this);
+        List<Bleat> result = filterBleats.filter(0, 37, 38, -123, -121);
+        if (result != null) {
+            for (Bleat bleat : result) {
+                Log.d("map", bleat.getMessage());
+            }
+            Log.d("map", "done");
+        } else {
+            Log.d("map", "ggwp");
+        }
+        /* end testing filterBleats */
     }
 
     @Override
@@ -68,9 +84,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("map", "connection suspended");
     }
 
-    protected void sayHi() {
-        Log.d("map", "Hello");
-    }
 
     protected double[] getGPS() {
         double[] ret = new double[2];
