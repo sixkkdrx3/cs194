@@ -2,9 +2,6 @@ package cs194.maaap;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 
-/**
- * Created by kaidi on 1/24/16.
- */
 
 @DynamoDBTable(tableName = "MaaapBleats")
 public class Bleat {
@@ -24,7 +21,10 @@ public class Bleat {
 
     @DynamoDBAttribute(attributeName = "Message")
     public String getMessage() {
-        return message;
+        if(message == null)
+            return "";
+        else
+            return message;
     }
 
     public void setMessage(String message) {

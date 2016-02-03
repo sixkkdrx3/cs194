@@ -1,19 +1,19 @@
 package cs194.maaap;
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
-/**
- * Created by waldenpond on 1/24/16.
- */
 public class InputDialogFragment extends DialogFragment {
 
     /**
@@ -32,7 +32,7 @@ public class InputDialogFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.input_dialog_fragment, container, false);
         final EditText tv = (EditText)v.findViewById(R.id.msg);
         // Watch for button clicks.
-        Button button = (Button)v.findViewById(R.id.submit_button);
+        FloatingActionButton button = (FloatingActionButton) v.findViewById(R.id.submit_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 final String res = tv.getText().toString();
@@ -42,6 +42,26 @@ public class InputDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
+
+        final TextView bleatBottom = (TextView)v.findViewById(R.id.bleat_wc);
+        tv.addTextChangedListener(new TextWatcher(){
+            public void afterTextChanged(Editable s) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                bleatBottom.setText((140 - s.length()) + " characters left");
+            }
+        });
+
+        Rect displayRectangle = new Rect();
+        Activity activity = getActivity();
+        Window window = activity.getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        View v2 =  v.findViewById(R.id.input);
+        v2.setMinimumWidth((int) (displayRectangle.width() * 0.7f));
+        v2.setMinimumHeight((int) (displayRectangle.height() * 0.65f));
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
         return v;
     }
 }
