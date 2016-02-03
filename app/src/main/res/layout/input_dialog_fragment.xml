@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/input"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Bleat! : "/>
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <EditText
-        android:layout_width="300dp"
-        android:layout_height="350dp"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/msg"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_gravity="center_horizontal"
-        android:gravity="left|top" />
-
-    <Button
+        android:background="@null"
+        android:gravity="left|top"
+        android:maxLength="140"/>
+    <ImageButton
         android:id="@+id/submit_button"
-        android:text="submit"
-        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_send"
+        android:layout_gravity="center_horizontal|bottom"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@null"/>
+
 
 </LinearLayout>
