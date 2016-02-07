@@ -21,6 +21,10 @@ android {
             debuggable true
         }
     }
+    lintOptions {
+
+        checkReleaseBuilds false
+    }
 }
 
 dependencies {
@@ -35,5 +39,5 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-ddb:2.+'
     compile 'com.amazonaws:aws-android-sdk-ddb-mapper:2.+'
     compile 'com.android.support:design:23.1.1'
-
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
 }

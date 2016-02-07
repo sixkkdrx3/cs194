@@ -2,6 +2,7 @@ package cs194.maaap;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
@@ -15,11 +16,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.BubbleIconFactory;
+import com.google.maps.android.ui.IconGenerator;
+
 import android.location.LocationManager;
 import android.view.View;
 import android.widget.Button;
@@ -64,8 +70,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
-        DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
-        ddf.show(ft, "showBleat");
+        marker.showInfoWindow();
+       // DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
+        //ddf.show(ft, "showBleat");
         return true;
     }
 
@@ -88,7 +95,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void drawBleats()
     {
         mMap.clear();
-
         /* begin testing filterBleats */
         FilterBleats filterBleats = new FilterBleats(this);
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
@@ -101,6 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double latMax = 37.431350;
         double lngMin = -122.182196;
         double lngMax = -122.159193;
+        IconGenerator iconFactory = new IconGenerator(this);
 
         if (result != null) {
             Random r = new Random();
@@ -112,15 +119,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             bleatMap.clear();
             for (Bleat bleat : result) {
-                Log.d("map", bleat.getMessage());
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(bleat.getLatitude(), bleat.getLongitude())).snippet(bleat.getBID()));
+                Log.d("mappp", bleat.getMessage());
+//                Marker haha = mMap.addMarker(new MarkerOptions()
+//                        .position(new LatLng(bleat.getLatitude(), bleat.getLongitude()))
+//                        .title(result.size() + bleat.getMessage()));
+                addIcon(iconFactory, bleat.getMessage(), new LatLng(bleat.getLatitude(), bleat.getLongitude()));
                 bleatMap.put(bleat.getBID(), bleat);
             }
             Log.d("map", "done");
         } else {
             Log.d("map", "ggwp");
         }
+    }
+
+    private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+        mMap.addMarker(markerOptions);
     }
 
     public void onCameraChange(CameraPosition change)
