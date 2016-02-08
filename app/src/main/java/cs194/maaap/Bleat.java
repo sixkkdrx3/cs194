@@ -1,7 +1,7 @@
 package cs194.maaap;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
-
+import java.util.HashSet;
 
 @DynamoDBTable(tableName = "MaaapBleats")
 public class Bleat {
@@ -9,6 +9,7 @@ public class Bleat {
     private String message;
     private double latitude, longitude;
     private long time;
+    private HashSet<String> upvotes, downvotes;
 
     @DynamoDBHashKey(attributeName = "BID")
     public String getBID() {
@@ -55,6 +56,13 @@ public class Bleat {
 
     @DynamoDBAttribute(attributeName = "Time")
     public long getTime() {return time;}
-
     public void setTime(long time) {this.time = time;}
+
+    @DynamoDBAttribute(attributeName = "Upvotes")
+    public HashSet<String> getUpvotes() { return upvotes; }
+    public void setUpvotes(HashSet<String> upvotes) {this.upvotes = upvotes; }
+
+    @DynamoDBAttribute(attributeName = "Downvotes")
+    public HashSet<String> getDownvotes() { return downvotes; }
+    public void setDownvotes(HashSet<String> downvotes) {this.downvotes = downvotes; }
 }
