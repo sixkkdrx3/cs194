@@ -5,6 +5,9 @@ import android.util.Log;
 import android.content.ContextWrapper;
 import android.content.Context;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +31,14 @@ public class FilterBleats extends ContextWrapper {
         }
     }
 
-    public List<Bleat> filter(long minTime, double minLat, double maxLat,
-                              double minLong, double maxLong) {
+    public List<Bleat> filter(long minTime, LatLngBounds bounds) {
         if (result == null) return result;
 
         List<Bleat> filterResult = new ArrayList<Bleat>();
         for (Bleat bleat : result) {
             Log.d("map", bleat.getTime() + " " + bleat.getLatitude() + " " + bleat.getLongitude() + " " + bleat.getMessage());
-            if (bleat.getTime() > minTime && bleat.getLatitude() > minLat &&
-                bleat.getLatitude() < maxLat && bleat.getLongitude() > minLong &&
-                bleat.getLongitude() < maxLong) {
+            LatLng pos = new LatLng(bleat.getLatitude(), bleat.getLongitude());
+            if (bleat.getTime() > minTime && bounds.contains(pos)) {
                 filterResult.add(bleat);
             }
         }

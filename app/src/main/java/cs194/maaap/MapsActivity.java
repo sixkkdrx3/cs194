@@ -33,6 +33,7 @@ import android.widget.Button;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Calendar;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener {
@@ -40,6 +41,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private HashMap<String, Bleat> bleatMap;
+    private long lastUpdated;
 
 
     @Override
@@ -49,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         bleatMap = new HashMap<String, Bleat>();
+        lastUpdated = 0;
 
         mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
                 .addApi(LocationServices.API).build();
@@ -65,8 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public boolean onMarkerClick(Marker marker)
-    {
+    public boolean onMarkerClick(Marker marker) {
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
@@ -83,7 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double ret[] = getGPS();
         LatLng currentLocation = new LatLng(ret[0], ret[1]);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 15.0));
-        drawBleats();
+        drawBleats(true);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnCameraChangeListener(this);
 
@@ -92,44 +94,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //37.427490, -122.170265 (main quad)
     }
 
-    public void drawBleats()
-    {
-        mMap.clear();
-        /* begin testing filterBleats */
-        FilterBleats filterBleats = new FilterBleats(this);
-        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-        //List<Bleat> result = filterBleats.filter(0, bounds.southwest.latitude, bounds.northeast.latitude, bounds.southwest.longitude, bounds.northeast.longitude);
-        List<Bleat> result = filterBleats.filter(0, -180, 180, -180, 180);
-        //Log.d("map", Integer.toString(result.size()));
+    public void drawBleats(boolean ... forced) {
+        long curTime = Calendar.getInstance().getTimeInMillis();
+        if (curTime - lastUpdated > 120000 || (forced.length > 0 && forced[0])) {  // 2 minutes
+            //  mMap.clear(); // not needed?
+            /* begin testing filterBleats */
+            FilterBleats filterBleats = new FilterBleats(this);
+            LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+            List<Bleat> result = filterBleats.filter(0, bounds);
 
-        //test coordinates
-        double latMin = 37.420512;
-        double latMax = 37.431350;
-        double lngMin = -122.182196;
-        double lngMax = -122.159193;
-        IconGenerator iconFactory = new IconGenerator(this);
+            IconGenerator iconFactory = new IconGenerator(this);
 
-        if (result != null) {
-            Random r = new Random();
-            r.setSeed(System.currentTimeMillis());
-            for(Bleat bleat : result) {
-                bleat.setLatitude(latMin + (latMax-latMin)*r.nextDouble());
-                bleat.setLongitude(lngMin + (lngMax - lngMin) * r.nextDouble());
+            if (result != null) {
+                bleatMap.clear();
+                for (Bleat bleat : result) {
+                    Log.d("mappp", bleat.getMessage());
+                    if (!bleatMap.containsKey(bleat.getBID())) {
+                        addIcon(iconFactory, bleat.getMessage(),
+                                new LatLng(bleat.getLatitude(), bleat.getLongitude()));
+                    }
+                    bleatMap.put(bleat.getBID(), bleat);
+                }
+                Log.d("map", "done");
+            } else {
+                Log.d("map", "ggwp");
             }
-
-            bleatMap.clear();
-            for (Bleat bleat : result) {
-                Log.d("mappp", bleat.getMessage());
-//                Marker haha = mMap.addMarker(new MarkerOptions()
-//                        .position(new LatLng(bleat.getLatitude(), bleat.getLongitude()))
-//                        .title(result.size() + bleat.getMessage()));
-                addIcon(iconFactory, bleat.getMessage(), new LatLng(bleat.getLatitude(), bleat.getLongitude()));
-                bleatMap.put(bleat.getBID(), bleat);
-            }
-            Log.d("map", "done");
-        } else {
-            Log.d("map", "ggwp");
         }
+        lastUpdated = curTime;
     }
 
     private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
@@ -140,10 +131,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(markerOptions);
     }
 
-    public void onCameraChange(CameraPosition change)
-    {
+    public void onCameraChange(CameraPosition change) {
         Log.d("map", "cameraChanged");
-        //drawBleats();
+        drawBleats(true);
     }
 
     @Override
