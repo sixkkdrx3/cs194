@@ -1,11 +1,17 @@
 package cs194.maaap;
 
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.graphics.Rect;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.Log;
@@ -40,7 +46,7 @@ public class DisplayDialogFragment extends DialogFragment {
 
         up.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()));
+                BleatAction bleatAction = new BleatAction(((MapsActivity) getActivity()));
                 UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
                 try {
                     upvoteBleat.execute(bleat).get();
@@ -65,8 +71,14 @@ public class DisplayDialogFragment extends DialogFragment {
                 number.setText(Integer.toString(num));
             }
         });
-
-
+        Rect displayRectangle = new Rect();
+        Activity activity = getActivity();
+        Window window = activity.getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        View v2 =  v.findViewById(R.id.msg);
+        v2.setMinimumWidth((int) (displayRectangle.width() * 0.4f));
+        v2.setMinimumHeight((int) (displayRectangle.height() * 0.35f));
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return v;
     }
 }
