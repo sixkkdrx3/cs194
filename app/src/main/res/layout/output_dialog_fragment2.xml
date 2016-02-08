@@ -70,7 +70,7 @@
             android:layout_width="dp"
             android:layout_weight="0.75"
             android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="45dp"
             android:padding="10dp"
             android:id="@+id/msg"
             android:textSize="20sp"
