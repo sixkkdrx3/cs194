@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="Vote for your favorite bleats!"
-        android:textSize="10sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:background="#90C3D4"
         android:textColor="#ffffff"
