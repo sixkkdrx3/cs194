@@ -96,11 +96,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void drawBleats(boolean ... forced) {
         long curTime = Calendar.getInstance().getTimeInMillis();
-        if (curTime - lastUpdated > 120000 || (forced.length > 0 && forced[0])) {  // 2 minutes
+        if (curTime - lastUpdated > Constants.WAIT_TIME || (forced.length > 0 && forced[0])) {  // 2 minutes
             //  mMap.clear(); // not needed?
             /* begin testing filterBleats */
-            FilterBleats filterBleats = new FilterBleats(this);
             LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+            FilterBleats filterBleats = new FilterBleats(this, bounds, curTime - Constants.EXPIRE_DURATION);
             List<Bleat> result = filterBleats.filter(0, bounds);
 
             IconGenerator iconFactory = new IconGenerator(this);
