@@ -2,12 +2,14 @@ package cs194.maaap;
 
 
 import android.app.DialogFragment;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.Log;
 
@@ -21,14 +23,23 @@ public class DisplayDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.output_dialog_fragment, container, false);
+        View v = inflater.inflate(R.layout.output_dialog_fragment2, container, false);
         TextView message = (TextView)v.findViewById(R.id.msg);
         message.setText(bleat.getMessage());
+//        final ImageView up = (ImageView)v.findViewById(R.id.up);
+//        up.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                upvoteCnt++;
+//                up.setText("Upvotes : " + Integer.toString(upvoteCnt));
+//            }
+//        });
         // Watch for button clicks.
-        final Button up = (Button)v.findViewById(R.id.up);
-        final Button down = (Button)v.findViewById(R.id.down);
-        up.setText("Upvotes : " + Integer.toString(bleat.getUpvotes().size() - 1));
-        down.setText("Downvotes : " + Integer.toString(bleat.getDownvotes().size() - 1));
+
+        final ImageView up = (ImageView)v.findViewById(R.id.up);
+        final ImageView down = (ImageView)v.findViewById(R.id.down);
+        final TextView number = (TextView)v.findViewById(R.id.num);
+        int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
+        number.setText(Integer.toString(num));
 
         up.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -39,8 +50,9 @@ public class DisplayDialogFragment extends DialogFragment {
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 };
-                up.setText("Upvotes : " + Integer.toString(bleat.getUpvotes().size() - 1));
-                down.setText("Downvotes : " + Integer.toString(bleat.getDownvotes().size() - 1));
+                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
+                number.setText(Integer.toString(num));
+
             }
         });
         down.setOnClickListener(new View.OnClickListener(){
@@ -52,10 +64,11 @@ public class DisplayDialogFragment extends DialogFragment {
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                up.setText("Upvotes : " + Integer.toString(bleat.getUpvotes().size() - 1));
-                down.setText("Downvotes : " + Integer.toString(bleat.getDownvotes().size() - 1));
+                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
+                number.setText(Integer.toString(num));
             }
         });
+
 
         return v;
     }
