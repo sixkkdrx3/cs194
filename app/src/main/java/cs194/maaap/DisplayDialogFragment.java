@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DisplayDialogFragment extends DialogFragment {
@@ -25,24 +26,31 @@ public class DisplayDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.output_dialog_fragment, container, false);
+        View v = inflater.inflate(R.layout.output_dialog_fragment2, container, false);
         TextView message = (TextView)v.findViewById(R.id.msg);
         message.setText(bleat.getMessage());
+//        final ImageView up = (ImageView)v.findViewById(R.id.up);
+//        up.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                upvoteCnt++;
+//                up.setText("Upvotes : " + Integer.toString(upvoteCnt));
+//            }
+//        });
         // Watch for button clicks.
-        final Button up = (Button)v.findViewById(R.id.up);
-        up.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                upvoteCnt++;
-                up.setText("Upvotes : " + Integer.toString(upvoteCnt));
-            }
-        });
-        final Button down = (Button)v.findViewById(R.id.down);
-        down.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                downvoteCnt++;
-                down.setText("Downvotes : " + Integer.toString(downvoteCnt));
-            }
-        });
+//        final Button up = (Button)v.findViewById(R.id.up);
+//        up.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                upvoteCnt++;
+//                up.setText("Upvotes : " + Integer.toString(upvoteCnt));
+//            }
+//        });
+//        final Button down = (Button)v.findViewById(R.id.down);
+//        down.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View v){
+//                downvoteCnt++;
+//                down.setText("Downvotes : " + Integer.toString(downvoteCnt));
+//            }
+//        });
 
         return v;
     }
