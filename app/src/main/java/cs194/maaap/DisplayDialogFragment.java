@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,13 +44,14 @@ public class DisplayDialogFragment extends DialogFragment {
 
         up.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()));
+                BleatAction bleatAction = new BleatAction(((MapsActivity) getActivity()));
                 UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
                 try {
                     upvoteBleat.execute(bleat).get();
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
-                };
+                }
+                ;
                 int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
                 number.setText(Integer.toString(num));
 
@@ -68,8 +70,7 @@ public class DisplayDialogFragment extends DialogFragment {
                 number.setText(Integer.toString(num));
             }
         });
-
-
+       // getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return v;
     }
 }

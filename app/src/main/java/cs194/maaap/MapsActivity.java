@@ -75,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        // marker.showInfoWindow();
         DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
         ddf.show(ft, "showBleat");
+
         return true;
     }
 
