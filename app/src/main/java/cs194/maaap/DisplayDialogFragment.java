@@ -1,7 +1,9 @@
 package cs194.maaap;
 
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.graphics.Rect;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -70,7 +72,14 @@ public class DisplayDialogFragment extends DialogFragment {
                 number.setText(Integer.toString(num));
             }
         });
-       // getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        Rect displayRectangle = new Rect();
+        Activity activity = getActivity();
+        Window window = activity.getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        View v2 =  v.findViewById(R.id.msg);
+        v2.setMinimumWidth((int) (displayRectangle.width() * 0.5f));
+        v2.setMinimumHeight((int) (displayRectangle.height() * 0.4f));
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return v;
     }
 }
