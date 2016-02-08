@@ -1,9 +1,6 @@
 package cs194.maaap;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.graphics.Bitmap;
-import android.location.Criteria;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
@@ -16,23 +13,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.ui.BubbleIconFactory;
 import com.google.maps.android.ui.IconGenerator;
 
-import android.location.LocationManager;
 import android.view.View;
-import android.widget.Button;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.Calendar;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -94,6 +86,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //37.427490, -122.170265 (main quad)
     }
 
+    private int getTextStyle(int size) {
+        switch(size) {
+            case 10:
+                return R.style.textSize10;
+            case 11:
+                return R.style.textSize11;
+            case 12:
+                return R.style.textSize12;
+            case 13:
+                return R.style.textSize13;
+            case 14:
+                return R.style.textSize14;
+            case 15:
+                return R.style.textSize15;
+            case 16:
+                return R.style.textSize16;
+            case 17:
+                return R.style.textSize17;
+            case 18:
+                return R.style.textSize18;
+            case 19:
+                return R.style.textSize19;
+            case 20:
+                return R.style.textSize20;
+        }
+        return R.style.textSize10;
+    }
+
     public void drawBleats(boolean ... forced) {
         long curTime = Calendar.getInstance().getTimeInMillis();
         if (curTime - lastUpdated > Constants.WAIT_TIME || (forced.length > 0 && forced[0])) {  // 2 minutes
@@ -110,6 +130,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (Bleat bleat : result) {
                     Log.d("mappp", bleat.getMessage());
                     if (!bleatMap.containsKey(bleat.getBID())) {
+                        int upvotes = bleat.computeNetUpvotes();
+                        int fontSize = Math.min(20, (int) (Math.log(Math.max(upvotes + 1, 1)) / Math.log(1.5) + 10.00001));
+                        iconFactory.setTextAppearance(getTextStyle(fontSize));
                         MarkerOptions markerOptions = new MarkerOptions().
                                 icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(bleat.getMessage()))).
                                 position(new LatLng(bleat.getLatitude(), bleat.getLongitude())).

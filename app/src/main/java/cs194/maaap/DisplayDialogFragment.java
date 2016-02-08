@@ -2,13 +2,10 @@ package cs194.maaap;
 
 
 import android.app.DialogFragment;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.Log;
@@ -50,7 +47,7 @@ public class DisplayDialogFragment extends DialogFragment {
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 };
-                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
+                int num = bleat.computeNetUpvotes();
                 number.setText(Integer.toString(num));
 
             }

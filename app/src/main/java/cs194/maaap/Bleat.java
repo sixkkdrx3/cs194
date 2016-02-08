@@ -73,4 +73,8 @@ public class Bleat {
     @DynamoDBAttribute(attributeName = "Downvotes")
     public HashSet<String> getDownvotes() { return downvotes; }
     public void setDownvotes(HashSet<String> downvotes) {this.downvotes = downvotes; }
+
+    public int computeNetUpvotes() {
+        return getUpvotes().size()-getDownvotes().size();
+    }
 }
