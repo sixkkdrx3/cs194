@@ -76,7 +76,7 @@ public class DisplayDialogFragment extends DialogFragment {
         Window window = activity.getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
         View v2 =  v.findViewById(R.id.msg);
-        v2.setMinimumWidth((int) (displayRectangle.width() * 0.4f));
+        v2.setMinimumWidth((int) (displayRectangle.width() * 0.7f));
         v2.setMinimumHeight((int) (displayRectangle.height() * 0.35f));
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return v;
