@@ -2,6 +2,7 @@ package cs194.maaap;
 
 
 import android.app.DialogFragment;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,18 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.util.Log;
 
 public class DisplayDialogFragment extends DialogFragment {
-
-    int upvoteCnt = 0;
-    int downvoteCnt = 0;
-    Bleat bleat;
+    private Bleat bleat;
 
     public DisplayDialogFragment(Bleat bleat) {
         this.bleat=bleat;
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,20 +34,41 @@ public class DisplayDialogFragment extends DialogFragment {
 //            }
 //        });
         // Watch for button clicks.
-//        final Button up = (Button)v.findViewById(R.id.up);
-//        up.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                upvoteCnt++;
-//                up.setText("Upvotes : " + Integer.toString(upvoteCnt));
-//            }
-//        });
-//        final Button down = (Button)v.findViewById(R.id.down);
-//        down.setOnClickListener(new View.OnClickListener(){
-//            public void onClick(View v){
-//                downvoteCnt++;
-//                down.setText("Downvotes : " + Integer.toString(downvoteCnt));
-//            }
-//        });
+
+        final ImageView up = (ImageView)v.findViewById(R.id.up);
+        final ImageView down = (ImageView)v.findViewById(R.id.down);
+        final TextView number = (TextView)v.findViewById(R.id.num);
+        int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
+        number.setText(Integer.toString(num));
+
+        up.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()));
+                UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
+                try {
+                    upvoteBleat.execute(bleat).get();
+                } catch (Exception e) {
+                    Log.d("map", "ggwp");
+                };
+                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
+                number.setText(Integer.toString(num));
+
+            }
+        });
+        down.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()));
+                DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction);
+                try {
+                    downvoteBleat.execute(bleat).get();
+                } catch (Exception e) {
+                    Log.d("map", "ggwp");
+                }
+                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
+                number.setText(Integer.toString(num));
+            }
+        });
+
 
         return v;
     }

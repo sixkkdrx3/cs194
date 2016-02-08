@@ -9,7 +9,15 @@ public class Bleat {
     private String message;
     private double latitude, longitude;
     private long time;
-    private HashSet<String> upvotes, downvotes;
+    private HashSet<String> upvotes;
+    private HashSet<String> downvotes;
+
+    public Bleat() {
+        upvotes = new HashSet<String>();
+        downvotes = new HashSet<String>();
+        upvotes.add("ggwp");
+        downvotes.add("ggwp");
+    }
 
     @DynamoDBHashKey(attributeName = "BID")
     public String getBID() {
