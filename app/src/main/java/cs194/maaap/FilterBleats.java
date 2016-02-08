@@ -1,6 +1,5 @@
 package cs194.maaap;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.content.ContextWrapper;
 import android.content.Context;
@@ -21,7 +20,7 @@ public class FilterBleats extends ContextWrapper {
     public FilterBleats(Context base) {
         super(base);
         BleatAction bleatAction = new BleatAction((MapsActivity)base);
-        getBleats getBleats = new getBleats(bleatAction);
+        GetBleats getBleats = new GetBleats(bleatAction);
         List<Bleat> result;
         try {
             result = getBleats.execute().get();

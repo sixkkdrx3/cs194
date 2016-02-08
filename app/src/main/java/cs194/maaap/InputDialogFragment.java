@@ -37,7 +37,7 @@ public class InputDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 final String res = tv.getText().toString();
                 BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()));
-                saveBleat saveBleat = new saveBleat(bleatAction);
+                SaveBleat saveBleat = new SaveBleat(bleatAction);
                 saveBleat.execute(res);
                 dismiss();
             }

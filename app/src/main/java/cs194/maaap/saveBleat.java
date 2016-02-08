@@ -5,11 +5,11 @@ import android.os.AsyncTask;
 /**
  * Created by kaidi on 1/24/16.
  */
-public class saveBleat extends AsyncTask<String, Void, Void> {
+public class SaveBleat extends AsyncTask<String, Void, Void> {
 
     private BleatAction bleatAction;
 
-    public saveBleat(BleatAction bleatAction) {
+    public SaveBleat(BleatAction bleatAction) {
         this.bleatAction = bleatAction;
     }
 
