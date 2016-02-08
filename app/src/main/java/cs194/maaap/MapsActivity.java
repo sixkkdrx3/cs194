@@ -1,6 +1,8 @@
 package cs194.maaap;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
@@ -64,9 +66,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
-       // marker.showInfoWindow();
         DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
         ddf.show(ft, "showBleat");
+        marker.showInfoWindow();
 
         return true;
     }
@@ -81,6 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawBleats(true);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnCameraChangeListener(this);
+        mMap.setInfoWindowAdapter(new FakeWindowAdapter(this));
 
         /* end testing filterBleats */
 
@@ -115,6 +118,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return R.style.textSize10;
     }
 
+    public String wordWrap(String message, int fontSize)
+    {
+        int threshold = 350/fontSize;
+        for(int i = threshold; i < message.length()-1; i+=threshold)
+        {
+            if(message.charAt(i) != ' ' && message.charAt(i-1) != ' ')
+            {
+                message = message.substring(0, i) + "-\n" + message.substring(i, message.length());
+                i+=2;
+            }
+            else
+            {
+                message = message.substring(0, i) + "\n" + message.substring(i, message.length());
+                i++;
+            }
+        }
+        return message;
+    }
+
     public void drawBleats(boolean ... forced) {
         long curTime = Calendar.getInstance().getTimeInMillis();
         if (curTime - lastUpdated > Constants.WAIT_TIME || (forced.length > 0 && forced[0])) {  // 2 minutes
@@ -133,13 +155,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (!bleatMap.containsKey(bleat.getBID())) {
                         int upvotes = bleat.computeNetUpvotes();
                         int fontSize = Math.min(20, (int) (Math.log(Math.max(upvotes + 1, 1)) / Math.log(1.5) + 10.00001));
+                        String message = wordWrap(bleat.getMessage(), fontSize);
                         iconFactory.setTextAppearance(getTextStyle(fontSize));
                         MarkerOptions markerOptions = new MarkerOptions().
-                                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(bleat.getMessage()))).
+                                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(message))).
                                 position(new LatLng(bleat.getLatitude(), bleat.getLongitude())).
                                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
                         markerOptions.snippet(bleat.getBID());
-                        markerOptions.title(bleat.getMessage());
+                        markerOptions.title(message);
                         Marker m = mMap.addMarker(markerOptions);
                     }
                     bleatMap.put(bleat.getBID(), bleat);
@@ -150,6 +173,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         lastUpdated = curTime;
+    }
+
+    public class FakeWindowAdapter implements GoogleMap.InfoWindowAdapter {
+        private Context context = null;
+
+        public FakeWindowAdapter(Context context) {
+            this.context = context;
+        }
+
+        public View getInfoWindow(Marker marker) {
+            View v = ((Activity) context).getLayoutInflater().inflate(R.layout.no_infowindow, null);
+            return v;
+        }
+
+        public View getInfoContents(Marker marker) {
+            return null;
+        }
     }
 
 
