@@ -27,6 +27,9 @@ public class DisplayDialogFragment extends DialogFragment {
         // Watch for button clicks.
         final Button up = (Button)v.findViewById(R.id.up);
         final Button down = (Button)v.findViewById(R.id.down);
+        up.setText("Upvotes : " + Integer.toString(bleat.getUpvotes().size() - 1));
+        down.setText("Downvotes : " + Integer.toString(bleat.getDownvotes().size() - 1));
+
         up.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()));
