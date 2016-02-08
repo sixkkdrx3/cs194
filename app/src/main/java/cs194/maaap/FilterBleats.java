@@ -21,19 +21,18 @@ public class FilterBleats extends ContextWrapper {
     private BleatAction bleatAction;
     private List<Bleat> result = null;
 
-    public FilterBleats(Context base, LatLngBounds bounds, long minTime) {
+    public FilterBleats(Context base) {
         super(base);
         BleatAction bleatAction = new BleatAction((MapsActivity)base);
-        GetBleats getBleats = new GetBleats(bleatAction);
 
         //Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
         //double a = bounds.northeast.latitude;
         //eav.put(":latMin", new AttributeValue().withN());
         //eav.put(":latMax", new AttributeValue().withN(bounds.southwest.latitude));
 
-        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        //DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
 //                .withFilterExpression();
-
+        GetBleats getBleats = new GetBleats(bleatAction);
 
         try {
             result = getBleats.execute().get();

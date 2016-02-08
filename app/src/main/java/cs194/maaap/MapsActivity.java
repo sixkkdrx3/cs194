@@ -100,8 +100,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //  mMap.clear(); // not needed?
             /* begin testing filterBleats */
             LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-            FilterBleats filterBleats = new FilterBleats(this, bounds, curTime - Constants.EXPIRE_DURATION);
-            List<Bleat> result = filterBleats.filter(0, bounds);
+            FilterBleats filterBleats = new FilterBleats(this);
+            List<Bleat> result = filterBleats.filter(curTime - Constants.EXPIRE_DURATION, bounds);
 
             IconGenerator iconFactory = new IconGenerator(this);
 

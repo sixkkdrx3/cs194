@@ -77,8 +77,8 @@ public class BleatAction {
         mapper.save(bleat);
     }
 
-    public List<Bleat> getBleats(DynamoDBScanExpression scanExpression) {
-        //DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+    public List<Bleat> getBleats() {
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
         PaginatedScanList<Bleat> result = mapper.scan(Bleat.class, scanExpression);
         return result;
     }
