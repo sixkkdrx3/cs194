@@ -72,9 +72,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
-        marker.showInfoWindow();
-       // DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
-        //ddf.show(ft, "showBleat");
+       // marker.showInfoWindow();
+        DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
+        ddf.show(ft, "showBleat");
         return true;
     }
 
@@ -110,8 +110,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (Bleat bleat : result) {
                     Log.d("mappp", bleat.getMessage());
                     if (!bleatMap.containsKey(bleat.getBID())) {
-                        addIcon(iconFactory, bleat.getMessage(),
-                                new LatLng(bleat.getLatitude(), bleat.getLongitude()));
+                        MarkerOptions markerOptions = new MarkerOptions().
+                                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(bleat.getMessage()))).
+                                position(new LatLng(bleat.getLatitude(), bleat.getLongitude())).
+                                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+                        markerOptions.snippet(bleat.getBID());
+                        markerOptions.title(bleat.getMessage());
+                        Marker m = mMap.addMarker(markerOptions);
                     }
                     bleatMap.put(bleat.getBID(), bleat);
                 }
@@ -123,13 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         lastUpdated = curTime;
     }
 
-    private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
-        MarkerOptions markerOptions = new MarkerOptions().
-                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
-                position(position).
-                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-        mMap.addMarker(markerOptions);
-    }
+
 
     public void onCameraChange(CameraPosition change) {
         Log.d("map", "cameraChanged");
