@@ -20,6 +20,10 @@ public class DisplayDialogFragment extends DialogFragment {
     private Bleat bleat;
 
     public DisplayDialogFragment(Bleat bleat) {
+        if(bleat == null) {
+            Log.e("map", "null bleat");
+            int bla = 1/0;
+        }
         this.bleat=bleat;
     }
 
