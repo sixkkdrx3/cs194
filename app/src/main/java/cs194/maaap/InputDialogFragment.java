@@ -45,7 +45,15 @@ public class InputDialogFragment extends DialogFragment {
 
         final TextView bleatBottom = (TextView)v.findViewById(R.id.bleat_wc);
         tv.addTextChangedListener(new TextWatcher(){
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s)
+            {
+                for(int i = 0; i < s.length(); i++){
+                    if(s.subSequence(i, i+1).toString().equals("\n")) {
+                        s.replace(i, i + 1, "");
+                        i--;
+                    }
+                }
+            }
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {

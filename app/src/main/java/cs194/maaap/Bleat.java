@@ -74,7 +74,7 @@ public class Bleat {
     public HashSet<String> getDownvotes() { return downvotes; }
     public void setDownvotes(HashSet<String> downvotes) {this.downvotes = downvotes; }
 
-    public int getVoteDifference() {
-        return upvotes.size() - downvotes.size();
+    public int computeNetUpvotes() {
+        return getUpvotes().size()-getDownvotes().size();
     }
 }
