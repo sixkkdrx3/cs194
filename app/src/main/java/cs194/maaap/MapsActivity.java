@@ -67,6 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
         DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
+
         ddf.show(ft, "showBleat");
         marker.showInfoWindow();
 
@@ -149,23 +150,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             IconGenerator iconFactory = new IconGenerator(this);
 
             if (result != null) {
-                bleatMap.clear();
                 for (Bleat bleat : result) {
                     Log.d("mappp", bleat.getMessage());
                     if (!bleatMap.containsKey(bleat.getBID())) {
+
+                        double lat = bleat.getLatitude() + (((bleat.getBID()+"lat").hashCode()%1024)-1023)/1024.0*0.001;
+                        double lng = bleat.getLongitude() + (((bleat.getBID()+"lng").hashCode()%1024)-1023)/1024.0*0.001;
+
                         int upvotes = bleat.computeNetUpvotes();
                         int fontSize = Math.min(20, (int) (Math.log(Math.max(upvotes + 1, 1)) / Math.log(1.5) + 10.00001));
                         String message = wordWrap(bleat.getMessage(), fontSize);
                         iconFactory.setTextAppearance(getTextStyle(fontSize));
                         MarkerOptions markerOptions = new MarkerOptions().
                                 icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(message))).
-                                position(new LatLng(bleat.getLatitude(), bleat.getLongitude())).
+                                position(new LatLng(lat, lng)).
                                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
                         markerOptions.snippet(bleat.getBID());
+                        if(bleat.getBID() == "e5c915c3-060e-4c26-a225-d809a7922988" || bleat.getBID() == "6742a95c-ee06-4628-9aae-0e3cc69b30b0")
+                            Log.d("map", "putting snippet " + bleat.getBID());
                         markerOptions.title(message);
                         Marker m = mMap.addMarker(markerOptions);
                     }
                     bleatMap.put(bleat.getBID(), bleat);
+                    if(bleat.getBID() == "e5c915c3-060e-4c26-a225-d809a7922988"|| bleat.getBID() == "6742a95c-ee06-4628-9aae-0e3cc69b30b0")
+                        Log.d("map", "putting bleat " + bleat.getBID());
                 }
                 Log.d("map", "done");
             } else {
