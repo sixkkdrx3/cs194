@@ -154,8 +154,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.d("mappp", bleat.getMessage());
                     if (!bleatMap.containsKey(bleat.getBID())) {
 
-                        double lat = bleat.getLatitude() + (((bleat.getBID()+"lat").hashCode()%1024)-1023)/1024.0*0.001;
-                        double lng = bleat.getLongitude() + (((bleat.getBID()+"lng").hashCode()%1024)-1023)/1024.0*0.001;
+                        double lat =  bleat.getLatitude();
+                        double lng = bleat.getLongitude();
+                        if(bleat.getTime()<1455059660758L) {
+                            lat += (((bleat.getBID() + " lat").hashCode() % 1024) - 512) / 1024.0 * 0.005;
+                            lng += (((bleat.getBID() + " lng").hashCode() % 1024) - 512) / 1024.0 * 0.005;
+                        }
 
                         int upvotes = bleat.computeNetUpvotes();
                         int fontSize = Math.min(20, (int) (Math.log(Math.max(upvotes + 1, 1)) / Math.log(1.5) + 10.00001));
