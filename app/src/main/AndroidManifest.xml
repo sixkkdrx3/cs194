@@ -31,6 +31,8 @@
             android:value="AIzaSyAgjGXqxnjn6EMmcHuwxghlKFk0CxC9wCU" />
 
         <activity
+            android:name=".Start" />
+        <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
