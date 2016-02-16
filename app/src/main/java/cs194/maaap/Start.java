@@ -17,12 +17,12 @@ public class Start extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.start);
 
-        /* New Handler to start the Menu-Activity
+        /* New Handler to start the Maps activity
          * and close this Splash-Screen after some seconds.*/
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                Intent mainIntent = new Intent(Start.this,Menu.class);
+                Intent mainIntent = new Intent(Start.this,MapsActivity.class);
                 Start.this.startActivity(mainIntent);
                 Start.this.finish();
             }
