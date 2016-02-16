@@ -50,13 +50,19 @@ public class BleatAction {
                 Secure.ANDROID_ID);
 
         HashSet<String> upVotes = bleat.getUpvotes();
-        upVotes.add(id);
+        HashSet<String> downVotes = bleat.getDownvotes();
 
-        if (bleat.getDownvotes().contains(id)) {
-            HashSet<String> downVotes = bleat.getDownvotes();
+        if (upVotes.contains(id)) { // un-do upvote
+            upVotes.remove(id);
+            bleat.setUpvotes(upVotes);
+            mapper.save(bleat);
+            return;
+        }
+        if (downVotes.contains(id)) {
             downVotes.remove(id);
             bleat.setDownvotes(downVotes);
         }
+        upVotes.add(id);
         bleat.setUpvotes(upVotes);
         mapper.save(bleat);
     }
@@ -64,15 +70,21 @@ public class BleatAction {
     public void downvoteBleat(Bleat bleat) {
         String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Secure.ANDROID_ID);
-
+        
+        HashSet<String> upVotes = bleat.getUpvotes();
         HashSet<String> downVotes = bleat.getDownvotes();
-        downVotes.add(id);
 
-        if (bleat.getUpvotes().contains(id)) {
-            HashSet<String> upVotes = bleat.getUpvotes();
+        if (downVotes.contains(id)) { // un-do downvote
+            downVotes.remove(id);
+            bleat.setDownvotes(downVotes);
+            mapper.save(bleat);
+            return;
+        }
+        if (upVotes.contains(id)) {
             upVotes.remove(id);
             bleat.setUpvotes(upVotes);
         }
+        downVotes.add(id);
         bleat.setDownvotes(downVotes);
         mapper.save(bleat);
     }
