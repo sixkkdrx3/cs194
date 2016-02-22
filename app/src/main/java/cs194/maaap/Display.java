@@ -29,34 +29,35 @@ public class Display extends Activity {
         int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
         number.setText(Integer.toString(num));
 
-        up.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                BleatAction bleatAction = new BleatAction(((MapsActivity)maaap));
-                UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
-                try {
-                    upvoteBleat.execute(bleat).get();
-                } catch (Exception e) {
-                    Log.d("map", "ggwp");
-                }
-                ;
-                int num = bleat.computeNetUpvotes();
-                number.setText(Integer.toString(num));
 
-            }
-        });
-        down.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                BleatAction bleatAction = new BleatAction(((MapsActivity) maaap));
-                DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction);
-                try {
-                    downvoteBleat.execute(bleat).get();
-                } catch (Exception e) {
-                    Log.d("map", "ggwp");
-                }
-                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
-                number.setText(Integer.toString(num));
-            }
-        });
+//        up.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                BleatAction bleatAction = new BleatAction(((MapsActivity)maaap));
+//                UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
+//                try {
+//                    upvoteBleat.execute(bleat).get();
+//                } catch (Exception e) {
+//                    Log.d("map", "ggwp");
+//                }
+//                ;
+//                int num = bleat.computeNetUpvotes();
+//                number.setText(Integer.toString(num));
+//
+//            }
+//        });
+//        down.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                BleatAction bleatAction = new BleatAction(((MapsActivity) maaap));
+//                DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction);
+//                try {
+//                    downvoteBleat.execute(bleat).get();
+//                } catch (Exception e) {
+//                    Log.d("map", "ggwp");
+//                }
+//                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
+//                number.setText(Integer.toString(num));
+//            }
+//        });
     }
 
 }
