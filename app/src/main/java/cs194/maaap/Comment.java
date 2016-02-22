@@ -10,7 +10,7 @@ import java.util.HashSet;
 /**
  * Created by SCQ on 2/21/2016.
  */
-@DynamoDBTable(tableName = "MaaapBleats")
+@DynamoDBTable(tableName = "MaaapComments")
 public class Comment implements Serializable {
     private String bid;
     private String cid;
@@ -40,7 +40,7 @@ public class Comment implements Serializable {
         return cid;
     }
 
-    public void setCID(String bid) {
+    public void setCID(String cid) {
         this.cid = cid;
     }
 

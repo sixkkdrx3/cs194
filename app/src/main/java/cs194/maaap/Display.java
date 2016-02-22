@@ -57,6 +57,11 @@ public class Display extends Activity {
                 number.setText(Integer.toString(num));
             }
         });
+
+        /* test for creating comment */
+        CommentAction commentAction = new CommentAction(this, bleat.getBID());
+        SaveComment saveComment = new SaveComment(commentAction);
+        saveComment.execute("what the fk is this comment");
     }
 
 }
