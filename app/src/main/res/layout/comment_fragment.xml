@@ -55,7 +55,6 @@
                 android:textSize="20sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="bold"
-
                 />
 
             <ImageView
@@ -72,5 +71,9 @@
         </LinearLayout>
 
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 </LinearLayout>
 
