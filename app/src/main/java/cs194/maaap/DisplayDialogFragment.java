@@ -45,6 +45,14 @@ public class DisplayDialogFragment extends DialogFragment {
         final ImageView up = (ImageView)v.findViewById(R.id.up);
         final ImageView down = (ImageView)v.findViewById(R.id.down);
         final TextView number = (TextView)v.findViewById(R.id.num);
+        if(bleat.isUpvoted(getActivity()))
+        {
+            up.setImageResource(R.drawable.upvote_highlight);
+        }
+        else if(bleat.isDownvoted(getActivity()))
+        {
+            down.setImageResource(R.drawable.downvote_highlight);
+        }
         int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
         number.setText(Integer.toString(num));
 
@@ -54,6 +62,8 @@ public class DisplayDialogFragment extends DialogFragment {
                 UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
                 try {
                     upvoteBleat.execute(bleat).get();
+                    up.setImageResource(R.drawable.upvote_highlight);
+                    down.setImageResource(R.drawable.downvote);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 };
@@ -68,6 +78,8 @@ public class DisplayDialogFragment extends DialogFragment {
                 DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction);
                 try {
                     downvoteBleat.execute(bleat).get();
+                    down.setImageResource(R.drawable.downvote_highlight);
+                    up.setImageResource(R.drawable.upvote);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }

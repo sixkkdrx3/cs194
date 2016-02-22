@@ -45,6 +45,8 @@ public class BleatAction {
         mapper.save(bleat);
     }
 
+
+
     public void upvoteBleat(Bleat bleat) {
         String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Secure.ANDROID_ID);

@@ -1,5 +1,8 @@
 package cs194.maaap;
 
+import android.app.Activity;
+import android.provider.Settings;
+
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 import java.util.HashSet;
 
@@ -60,6 +63,26 @@ public class Bleat {
     public void setCoordinates(double latitude, double longitude) {
         setLatitude(latitude);
         setLongitude(longitude);
+    }
+
+    public boolean isUpvoted(Activity activity)
+    {
+        String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        if(this.getUpvotes().contains(id))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean isDownvoted(Activity activity)
+    {
+        String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        if(this.getDownvotes().contains(id))
+            return true;
+        else
+            return false;
     }
 
     @DynamoDBAttribute(attributeName = "Time")
