@@ -1,10 +1,12 @@
 package cs194.maaap;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
+
+import java.io.Serializable;
 import java.util.HashSet;
 
 @DynamoDBTable(tableName = "MaaapBleats")
-public class Bleat {
+public class Bleat implements Serializable {
     private String bid;
     private String message;
     private double latitude, longitude;

@@ -3,6 +3,7 @@ package cs194.maaap;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
@@ -71,11 +72,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
-        DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
-
-        ddf.show(ft, "showBleat");
-        marker.showInfoWindow();
-
+        Intent displayIntent = new Intent(MapsActivity.this,Display.class);
+        Log.d("valll","hello from val");
+        displayIntent.putExtra("myBleat", bleatMap.get(bid));
+        MapsActivity.this.startActivity(displayIntent);
+        //MapsActivity.this.finish();
+//        DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
+//
+//        ddf.show(ft, "showBleat");
+//        marker.showInfoWindow();
+        Log.d("valll", "end");
         return true;
     }
 
