@@ -23,13 +23,13 @@ android:layout_height="fill_parent">
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="150dp"
     android:weightSum="1">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_weight="0.25"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:weightSum="1">
@@ -68,9 +68,9 @@ android:layout_height="fill_parent">
             android:paddingBottom="40dp"
             />
     </LinearLayout>
+
     <TextView
-        android:layout_width="dp"
-        android:layout_weight="0.75"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/bleat_content"
         android:textSize="20sp"
@@ -81,20 +81,49 @@ android:layout_height="fill_parent">
         android:background="@null"
         android:gravity="left|center_vertical"
         android:maxLength="140"/>
+    </LinearLayout>
 
+    <TextView
+        android:id="@+id/comment_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
 
-</LinearLayout>
-<TextView
-    android:id="@+id/bleat_title"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp"
+        android:text="Comments"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:background="#90C3D4"
+        android:textColor="#ffffff"
+        />
 
-    android:text="bleat!"
-    android:textSize="22sp"
-    android:textStyle="bold"
-    android:background="#90C3D4"
-    android:textColor="#ffffff"
-    />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:id="@+id/scroll_view" >
+
+        <LinearLayout
+            android:id="@+id/comment_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true">
+
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/new_comment" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comment"
+            android:id="@+id/comment_button" />
+
+    </LinearLayout>
 </LinearLayout>
 
