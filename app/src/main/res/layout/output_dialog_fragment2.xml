@@ -69,17 +69,5 @@
 
 
     </LinearLayout>
-    <TextView
-        android:id="@+id/bleat_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-
-        android:text="bleat!"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:background="#90C3D4"
-        android:textColor="#ffffff"
-        />
 </LinearLayout>
 

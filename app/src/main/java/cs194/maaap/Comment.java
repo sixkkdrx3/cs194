@@ -1,28 +1,29 @@
 package cs194.maaap;
 
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
 
-@DynamoDBTable(tableName = "MaaapBleats")
-public class Bleat implements Serializable {
+/**
+ * Created by SCQ on 2/21/2016.
+ */
+@DynamoDBTable(tableName = "MaaapComments")
+public class Comment implements Serializable {
     private String bid;
+    private String cid;
     private String message;
-    private double latitude, longitude;
     private long time;
     private HashSet<String> upvotes;
     private HashSet<String> downvotes;
-    private HashMap<String, String> reports;
 
-    public Bleat() {
+    public Comment() {
         upvotes = new HashSet<String>();
         downvotes = new HashSet<String>();
-        reports = new HashMap<String,String>();
         upvotes.add(Constants.DEFAULT_BLAH);
         downvotes.add(Constants.DEFAULT_BLAH);
-        reports.put(Constants.DEFAULT_BLAH, Constants.DEFAULT_BLAH);
     }
 
     @DynamoDBHashKey(attributeName = "BID")
@@ -32,6 +33,15 @@ public class Bleat implements Serializable {
 
     public void setBID(String bid) {
         this.bid = bid;
+    }
+
+    @DynamoDBHashKey(attributeName = "CID")
+    public String getCID() {
+        return cid;
+    }
+
+    public void setCID(String cid) {
+        this.cid = cid;
     }
 
     @DynamoDBAttribute(attributeName = "Message")
@@ -44,28 +54,6 @@ public class Bleat implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    @DynamoDBAttribute(attributeName = "Longitude")
-    public double getLongitude() {
-        return longitude;
-    }
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-
-    @DynamoDBAttribute(attributeName = "Latitude")
-    public double getLatitude() {
-        return latitude;
-    }
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setCoordinates(double latitude, double longitude) {
-        setLatitude(latitude);
-        setLongitude(longitude);
     }
 
     @DynamoDBAttribute(attributeName = "Time")
@@ -83,8 +71,4 @@ public class Bleat implements Serializable {
     public int computeNetUpvotes() {
         return getUpvotes().size()-getDownvotes().size();
     }
-
-    @DynamoDBAttribute(attributeName = "Reports")
-    public HashMap<String, String> getReports() { return reports; }
-    public void setReports(HashMap<String, String> reports) {this.reports = reports; }
 }
