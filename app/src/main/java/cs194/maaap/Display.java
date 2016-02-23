@@ -4,6 +4,7 @@ package cs194.maaap;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -85,9 +86,15 @@ public class Display extends Activity {
             allComments = getComments.execute().get();
         } catch (Exception e) { }
 
+        int cnt = 0;
         for (final Comment comment : allComments) {
+
             if (!comment.getBID().equals(bleat.getBID())) continue;
             View view = inflater.inflate(R.layout.comment_fragment, null);
+            if (cnt % 2 == 1){
+                view.setBackgroundColor(getResources().getColor((R.color.material_grey_300)));
+            }
+            cnt++;
             scroll.addView(view);
             TextView commentMessage = (TextView)view.findViewById(R.id.comment_content);
             commentMessage.setText(comment.getMessage());
