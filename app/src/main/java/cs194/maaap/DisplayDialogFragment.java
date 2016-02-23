@@ -58,7 +58,7 @@ public class DisplayDialogFragment extends DialogFragment {
 
         up.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                BleatAction bleatAction = new BleatAction(((MapsActivity) getActivity()));
+                BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()), "MapsActivity");
                 UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
                 try {
                     upvoteBleat.execute(bleat).get();
@@ -74,7 +74,7 @@ public class DisplayDialogFragment extends DialogFragment {
         });
         down.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()));
+                BleatAction bleatAction = new BleatAction(((MapsActivity)getActivity()), "MapsActivity");
                 DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction);
                 try {
                     downvoteBleat.execute(bleat).get();

@@ -5,6 +5,8 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 import com.amazonaws.services.dynamodbv2.model.*;
+
+import android.app.Activity;
 import android.content.Context;
 
 import java.util.Calendar;
@@ -20,9 +22,9 @@ public class BleatAction {
 
     private DynamoDBMapper mapper;
     double coords[];
-    private MapsActivity activity;
+    private Activity activity;
 
-    public BleatAction(MapsActivity activity) {
+    public BleatAction(Activity activity, String activityType) {
         this.activity = activity;
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 activity.getApplicationContext(),
@@ -31,7 +33,8 @@ public class BleatAction {
         );
         AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         mapper = new DynamoDBMapper(ddbClient);
-        coords = activity.getGPS();
+        if (activityType.equals("MapsActivity"))
+            coords = ((MapsActivity)activity).getGPS();
     }
 
     public void saveBleat(String message) {
@@ -52,13 +55,19 @@ public class BleatAction {
                 Secure.ANDROID_ID);
 
         HashSet<String> upVotes = bleat.getUpvotes();
-        upVotes.add(id);
+        HashSet<String> downVotes = bleat.getDownvotes();
 
-        if (bleat.getDownvotes().contains(id)) {
-            HashSet<String> downVotes = bleat.getDownvotes();
+        if (upVotes.contains(id)) { // un-do upvote
+            upVotes.remove(id);
+            bleat.setUpvotes(upVotes);
+            mapper.save(bleat);
+            return;
+        }
+        if (downVotes.contains(id)) {
             downVotes.remove(id);
             bleat.setDownvotes(downVotes);
         }
+        upVotes.add(id);
         bleat.setUpvotes(upVotes);
         mapper.save(bleat);
     }
@@ -66,15 +75,21 @@ public class BleatAction {
     public void downvoteBleat(Bleat bleat) {
         String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Secure.ANDROID_ID);
-
+        
+        HashSet<String> upVotes = bleat.getUpvotes();
         HashSet<String> downVotes = bleat.getDownvotes();
-        downVotes.add(id);
 
-        if (bleat.getUpvotes().contains(id)) {
-            HashSet<String> upVotes = bleat.getUpvotes();
+        if (downVotes.contains(id)) { // un-do downvote
+            downVotes.remove(id);
+            bleat.setDownvotes(downVotes);
+            mapper.save(bleat);
+            return;
+        }
+        if (upVotes.contains(id)) {
             upVotes.remove(id);
             bleat.setUpvotes(upVotes);
         }
+        downVotes.add(id);
         bleat.setDownvotes(downVotes);
         mapper.save(bleat);
     }

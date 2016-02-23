@@ -3,6 +3,7 @@ package cs194.maaap;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
@@ -28,6 +29,7 @@ import android.view.View;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener {
@@ -35,6 +37,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private HashMap<String, Bleat> bleatMap;
+    private HashMap<String, Marker> markerSet;
+    private Bleat bigBleat;
     private long lastUpdated;
 
 
@@ -45,6 +49,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         bleatMap = new HashMap<String, Bleat>();
+        markerSet = new HashMap<String, Marker>();
+        bigBleat = null;
         lastUpdated = 0;
 
         mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
@@ -66,11 +72,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
-        DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
-
-        ddf.show(ft, "showBleat");
-        marker.showInfoWindow();
-
+        Intent displayIntent = new Intent(MapsActivity.this,Display.class);
+        Log.d("valll","hello from val");
+        displayIntent.putExtra("myBleat", bleatMap.get(bid));
+        MapsActivity.this.startActivity(displayIntent);
+        //MapsActivity.this.finish();
+//        DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
+//
+//        ddf.show(ft, "showBleat");
+//        marker.showInfoWindow();
+        Log.d("valll", "end");
         return true;
     }
 
@@ -138,42 +149,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return message;
     }
 
+    private Marker addMarker(Bleat bleat, int fontSize) {
+        IconGenerator iconFactory = new IconGenerator(this);
+        double lat = bleat.getLatitude(), lng = bleat.getLongitude();
+        // Remove the random function below later
+        if(bleat.getTime()<1455059660758L) {
+            lat += (((bleat.getBID() + " lat").hashCode() % 1024) - 512) / 1024.0 * 0.005;
+            lng += (((bleat.getBID() + " lng").hashCode() % 1024) - 512) / 1024.0 * 0.005;
+        }
+
+        String message = wordWrap(bleat.getMessage(), fontSize);
+        iconFactory.setTextAppearance(getTextStyle(fontSize));
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(message))).
+                position(new LatLng(lat, lng)).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+        markerOptions.snippet(bleat.getBID());
+        if(bleat.getBID() == "e5c915c3-060e-4c26-a225-d809a7922988" || bleat.getBID() == "6742a95c-ee06-4628-9aae-0e3cc69b30b0")
+            Log.d("map", "putting snippet " + bleat.getBID());
+        markerOptions.title(message);
+        Marker m = mMap.addMarker(markerOptions);
+        markerSet.put(bleat.getBID(), m);
+        return m;
+    }
+
     public void drawBleats(boolean ... forced) {
         long curTime = Calendar.getInstance().getTimeInMillis();
         if (curTime - lastUpdated > Constants.WAIT_TIME || (forced.length > 0 && forced[0])) {  // 2 minutes
-            //  mMap.clear(); // not needed?
-            /* begin testing filterBleats */
             LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
             FilterBleats filterBleats = new FilterBleats(this);
             List<Bleat> result = filterBleats.filter(curTime - Constants.EXPIRE_DURATION, bounds);
-
-            IconGenerator iconFactory = new IconGenerator(this);
 
             if (result != null) {
                 for (Bleat bleat : result) {
                     Log.d("mappp", bleat.getMessage());
                     if (!bleatMap.containsKey(bleat.getBID())) {
-
-                        double lat =  bleat.getLatitude();
-                        double lng = bleat.getLongitude();
-                        if(bleat.getTime()<1455059660758L) {
-                            lat += (((bleat.getBID() + " lat").hashCode() % 1024) - 512) / 1024.0 * 0.005;
-                            lng += (((bleat.getBID() + " lng").hashCode() % 1024) - 512) / 1024.0 * 0.005;
-                        }
-
-                        int upvotes = bleat.computeNetUpvotes();
-                        int fontSize = Math.min(20, (int) (Math.log(Math.max(upvotes + 1, 1)) / Math.log(1.5) + 10.00001));
-                        String message = wordWrap(bleat.getMessage(), fontSize);
-                        iconFactory.setTextAppearance(getTextStyle(fontSize));
-                        MarkerOptions markerOptions = new MarkerOptions().
-                                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(message))).
-                                position(new LatLng(lat, lng)).
-                                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-                        markerOptions.snippet(bleat.getBID());
-                        if(bleat.getBID() == "e5c915c3-060e-4c26-a225-d809a7922988" || bleat.getBID() == "6742a95c-ee06-4628-9aae-0e3cc69b30b0")
-                            Log.d("map", "putting snippet " + bleat.getBID());
-                        markerOptions.title(message);
-                        Marker m = mMap.addMarker(markerOptions);
+                        Marker m = addMarker(bleat, Constants.BLEAT_DEFAULT_SIZE);
+                        markerSet.put(bleat.getBID(), m);
                     }
                     bleatMap.put(bleat.getBID(), bleat);
                     if(bleat.getBID() == "e5c915c3-060e-4c26-a225-d809a7922988"|| bleat.getBID() == "6742a95c-ee06-4628-9aae-0e3cc69b30b0")
@@ -182,6 +194,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("map", "done");
             } else {
                 Log.d("map", "ggwp");
+            }
+
+            int bestVal = -1000000;
+            String BID = "";
+            Bleat bestBleat = null;
+            for (Bleat bleat : bleatMap.values()) {
+                LatLng pt = new LatLng(bleat.getLatitude(), bleat.getLongitude());
+                if (bleat.computeNetUpvotes() > bestVal && bounds.contains(pt)) {
+                    bestVal = bleat.computeNetUpvotes();
+                    BID = bleat.getBID();
+                    bestBleat = bleat;
+                }
+            }
+
+            if (bestBleat != null && (bigBleat == null || BID != bigBleat.getBID())) {
+                if (bigBleat != null) {
+                    markerSet.get(bigBleat.getBID()).remove();
+                    markerSet.put(bigBleat.getBID(), addMarker(bigBleat, Constants.BLEAT_DEFAULT_SIZE));
+                }
+                markerSet.get(BID).remove();
+                markerSet.put(BID, addMarker(bestBleat, Constants.BLEAT_BIG_SIZE));
+                bigBleat = bestBleat;
             }
         }
         lastUpdated = curTime;

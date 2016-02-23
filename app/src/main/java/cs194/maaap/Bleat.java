@@ -4,22 +4,28 @@ import android.app.Activity;
 import android.provider.Settings;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
+
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 
 @DynamoDBTable(tableName = "MaaapBleats")
-public class Bleat {
+public class Bleat implements Serializable {
     private String bid;
     private String message;
     private double latitude, longitude;
     private long time;
     private HashSet<String> upvotes;
     private HashSet<String> downvotes;
+    private HashMap<String, String> reports;
 
     public Bleat() {
         upvotes = new HashSet<String>();
         downvotes = new HashSet<String>();
-        upvotes.add("ggwp");
-        downvotes.add("ggwp");
+        reports = new HashMap<String,String>();
+        upvotes.add(Constants.DEFAULT_BLAH);
+        downvotes.add(Constants.DEFAULT_BLAH);
+        reports.put(Constants.DEFAULT_BLAH, Constants.DEFAULT_BLAH);
     }
 
     @DynamoDBHashKey(attributeName = "BID")
@@ -100,4 +106,8 @@ public class Bleat {
     public int computeNetUpvotes() {
         return getUpvotes().size()-getDownvotes().size();
     }
+
+    @DynamoDBAttribute(attributeName = "Reports")
+    public HashMap<String, String> getReports() { return reports; }
+    public void setReports(HashMap<String, String> reports) {this.reports = reports; }
 }
