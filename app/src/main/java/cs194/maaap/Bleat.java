@@ -110,4 +110,10 @@ public class Bleat implements Serializable {
     @DynamoDBAttribute(attributeName = "Reports")
     public HashMap<String, String> getReports() { return reports; }
     public void setReports(HashMap<String, String> reports) {this.reports = reports; }
+
+    public boolean gt(Bleat other)
+    {
+        return (computeNetUpvotes() > other.computeNetUpvotes() ||
+                ((computeNetUpvotes() == other.computeNetUpvotes()) && (getTime() > other.getTime())));
+    }
 }

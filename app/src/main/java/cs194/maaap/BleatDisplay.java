@@ -20,7 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Display extends Activity {
+public class BleatDisplay extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class Display extends Activity {
         final ImageView down = (ImageView)findViewById(R.id.down);
         final TextView number = (TextView)findViewById(R.id.num);
         int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
-        final BleatAction bleatAction = new BleatAction(this, "Display");
+        final BleatAction bleatAction = new BleatAction(this, "BleatDisplay");
         number.setText(Integer.toString(num));
 
         up.setOnClickListener(new View.OnClickListener() {
