@@ -15,6 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -26,9 +29,29 @@ public class MultiBleatDisplay extends Activity {
         setContentView(R.layout.multibleat_display);
 
         Intent intent = getIntent();
-        Bleat[] bleats = (Bleat[])intent.getSerializableExtra("myBleats");
+        Bleat[] raw_bleats = (Bleat[])intent.getSerializableExtra("myBleats");
+        String order = intent.getStringExtra("order");
 
+        ArrayList<Bleat> bleats = new ArrayList<Bleat>();
+        for (Bleat bleat : raw_bleats) bleats.add(bleat);
 
+        /*
+        if (order.equals("new")) {
+            Collections.sort(bleats, new Comparator<Bleat>() {
+                @Override
+                public int compare(Bleat lhs, Bleat rhs) {
+                    return (int) (- lhs.getTime() + rhs.getTime());
+                }
+            });
+        } else {
+            Collections.sort(bleats, new Comparator<Bleat>() {
+                @Override
+                public int compare(Bleat lhs, Bleat rhs) {
+                    return (int) (- lhs.computeNetUpvotes() + rhs.computeNetUpvotes());
+                }
+            });
+        }
+        */
 
         LinearLayout bleatLayout = (LinearLayout) findViewById(R.id.bleat_scroll_layout);
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

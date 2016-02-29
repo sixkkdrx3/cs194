@@ -23,7 +23,7 @@ public class FilterBleats extends ContextWrapper {
 
     public FilterBleats(Context base) {
         super(base);
-        BleatAction bleatAction = new BleatAction((MapsActivity)base, "MapsActivity");
+        BleatAction bleatAction = new BleatAction((MainActivity)base, "MapsActivity");
 
         //Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
         //double a = bounds.northeast.latitude;

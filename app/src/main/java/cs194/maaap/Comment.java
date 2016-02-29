@@ -18,6 +18,7 @@ public class Comment implements Serializable {
     private long time;
     private HashSet<String> upvotes;
     private HashSet<String> downvotes;
+    private String authorID;
 
     public Comment() {
         upvotes = new HashSet<String>();
@@ -43,6 +44,13 @@ public class Comment implements Serializable {
     public void setCID(String cid) {
         this.cid = cid;
     }
+
+    @DynamoDBAttribute(attributeName = "AuthorID")
+    public String getAuthorID() {
+        return authorID;
+    }
+
+    public void setAuthorID(String id) { authorID = id; }
 
     @DynamoDBAttribute(attributeName = "Message")
     public String getMessage() {

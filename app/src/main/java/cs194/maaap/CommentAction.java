@@ -39,12 +39,15 @@ public class CommentAction {
 
     public void saveComment(String message) {
         String cid = UUID.randomUUID().toString();
+        String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
         Comment comment = new Comment();
         comment.setMessage(message);
         comment.setCID(cid);
         comment.setBID(bid);
         comment.setTime(Calendar.getInstance().getTimeInMillis());
+        comment.setAuthorID(id);
         mapper.save(comment);
 
     }

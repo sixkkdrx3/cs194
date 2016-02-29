@@ -18,6 +18,7 @@ public class Bleat implements Serializable {
     private HashSet<String> upvotes;
     private HashSet<String> downvotes;
     private HashMap<String, String> reports;
+    private String authorID;
 
     public Bleat() {
         upvotes = new HashSet<String>();
@@ -47,6 +48,15 @@ public class Bleat implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @DynamoDBAttribute(attributeName = "AuthorID")
+    public String getAuthorID() {
+        return authorID;
+    }
+
+    public void setAuthorID(String id) {
+        authorID = id;
     }
 
     @DynamoDBAttribute(attributeName = "Longitude")

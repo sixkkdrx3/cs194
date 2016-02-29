@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latest Bleats"
+        android:id="@+id/button"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Most Upvoted Bleats"
+        android:id="@+id/button2"
+        android:layout_below="@+id/button"
+        android:layout_alignLeft="@+id/button"
+        android:layout_alignStart="@+id/button" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Commented Bleats"
+        android:id="@+id/button3"
+        android:layout_below="@+id/button2"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_alignStart="@+id/button2" />
+
+</RelativeLayout>
