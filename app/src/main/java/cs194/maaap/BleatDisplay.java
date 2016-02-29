@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -134,12 +136,21 @@ public class BleatDisplay extends Activity {
         }
 
         final EditText tv = (EditText)findViewById(R.id.new_comment);
+//        tv.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                tv.requestLayout();
+//                BleatDisplay.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
+//                return false;
+//            }
+//        });
         Button button = (Button)findViewById(R.id.comment_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 final String res = tv.getText().toString();
                 SaveComment saveComment = new SaveComment(commentAction);
                 saveComment.execute(res);
+                tv.setText("");
             }
         });
     }
