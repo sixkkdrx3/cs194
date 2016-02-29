@@ -39,12 +39,15 @@ public class BleatAction {
 
     public void saveBleat(String message) {
         String bid = UUID.randomUUID().toString();
+        String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
+                Secure.ANDROID_ID);
 
         Bleat bleat = new Bleat();
         bleat.setMessage(message);
         bleat.setBID(bid);
         bleat.setCoordinates(coords[0], coords[1]);
         bleat.setTime(Calendar.getInstance().getTimeInMillis());
+        bleat.setAuthorID(id);
         mapper.save(bleat);
     }
 
