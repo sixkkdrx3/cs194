@@ -126,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else
         {
-            displayIntent = new Intent(MapsActivity.this, MultiBleatDisplay.class);
+            displayIntent = new Intent(MapsActivity.this, MultiBleatsDisplaySorted.class);
             displayIntent.putExtra("myBleats", bleats);
         }
 

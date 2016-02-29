@@ -22,7 +22,7 @@ public class Start extends Activity {
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                Intent mainIntent = new Intent(Start.this,MapsActivity.class);
+                Intent mainIntent = new Intent(Start.this,MaaapActivity.class);
                 Start.this.startActivity(mainIntent);
                 Start.this.finish();
             }
