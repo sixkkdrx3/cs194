@@ -150,6 +150,7 @@ public class BleatDisplay extends Activity {
                 final String res = tv.getText().toString();
                 SaveComment saveComment = new SaveComment(commentAction);
                 saveComment.execute(res);
+                tv.setText("");
             }
         });
     }
