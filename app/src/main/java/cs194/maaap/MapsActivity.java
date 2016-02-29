@@ -118,16 +118,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
-        Intent displayIntent = new Intent(MapsActivity.this,BleatDisplay.class);
-        Log.d("valll", "hello from val");
-        displayIntent.putExtra("myBleat", markerInfoMap.get(bid).bleats[0]);
+        Bleat[] bleats = markerInfoMap.get(bid).bleats;
+        Intent displayIntent;
+        if(bleats.length == 1) {
+            displayIntent = new Intent(MapsActivity.this, BleatDisplay.class);
+            displayIntent.putExtra("myBleat", bleats[0]);
+        }
+        else
+        {
+            displayIntent = new Intent(MapsActivity.this, MultiBleatDisplay.class);
+            displayIntent.putExtra("myBleats", bleats);
+        }
+
         MapsActivity.this.startActivity(displayIntent);
         //MapsActivity.this.finish();
 //        DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
 //
 //        ddf.show(ft, "showBleat");
 //        marker.showInfoWindow();
-        Log.d("valll", "end");
+        //Log.d("valll", "end");
         return true;
     }
 
