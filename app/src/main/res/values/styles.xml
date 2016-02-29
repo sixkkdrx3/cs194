@@ -1,45 +1,61 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--   your app branding color for the app bar -->
+        <item name="colorPrimary">#3F51B5</item>
+        <!--   darker variant for the status bar and contextual app bars -->
+        <item name="colorPrimaryDark">#303F9F</item>
+        <!--   theme UI controls like checkboxes and text fields -->
+        <item name="colorAccent">#FF4081</item>
     </style>
 
     <style name="textSize10">
         <item name="android:textSize">10sp</item>
     </style>
+
     <style name="textSize11">
         <item name="android:textSize">11sp</item>
     </style>
+
     <style name="textSize12">
         <item name="android:textSize">12sp</item>
     </style>
+
     <style name="textSize13">
         <item name="android:textSize">13sp</item>
     </style>
+
     <style name="textSize14">
         <item name="android:textSize">14sp</item>
     </style>
+
     <style name="textSize15">
         <item name="android:textSize">15sp</item>
     </style>
+
     <style name="textSize16">
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="textSize17">
         <item name="android:textSize">17sp</item>
     </style>
+
     <style name="textSize18">
         <item name="android:textSize">18sp</item>
     </style>
+
     <style name="textSize19">
         <item name="android:textSize">19sp</item>
     </style>
+
     <style name="textSize20">
         <item name="android:textSize">20sp</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

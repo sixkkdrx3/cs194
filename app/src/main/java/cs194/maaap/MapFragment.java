@@ -11,6 +11,7 @@ import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,8 +41,13 @@ import java.util.List;
 import java.util.Calendar;
 import java.util.Map;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener {
+//Old imports
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+public class MapFragment extends Fragment implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener{
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -49,6 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private HashMap<String, MarkerInfo> markerInfoMap;
     private Bleat bigBleat;
     private long lastUpdated;
+    private AppCompatActivity parentActivity;
 
     public class MarkerInfo {
         public Bitmap bitmap;
@@ -89,47 +96,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_map, container, false);
 
 
         bleatMap = new HashMap<String, Bleat>();
         markerInfoMap = new HashMap<String, MarkerInfo>();
         bigBleat = null;
         lastUpdated = 0;
+        parentActivity = (AppCompatActivity)getActivity();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(parentActivity).addConnectionCallbacks(this)
                 .addApi(LocationServices.API).build();
         mGoogleApiClient.connect();
 
-        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.bleat_button);
+        FloatingActionButton button = (FloatingActionButton) getView().findViewById(R.id.bleat_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
                 InputDialogFragment f = new InputDialogFragment();
                 f.show(ft, "postBleat");
             }
         });
+        return v;
     }
 
     public boolean onMarkerClick(Marker marker) {
         Log.d("map", "marker clicked " + marker.getSnippet());
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
         Bleat[] bleats = markerInfoMap.get(bid).bleats;
         Intent displayIntent;
         if(bleats.length == 1) {
-            displayIntent = new Intent(MapsActivity.this, BleatDisplay.class);
+            displayIntent = new Intent(parentActivity, BleatDisplay.class);
             displayIntent.putExtra("myBleat", bleats[0]);
         }
         else
         {
-            displayIntent = new Intent(MapsActivity.this, MultiBleatDisplay.class);
+            displayIntent = new Intent(parentActivity, MultiBleatDisplay.class);
             displayIntent.putExtra("myBleats", bleats);
         }
 
-        MapsActivity.this.startActivity(displayIntent);
+        parentActivity.startActivity(displayIntent);
         //MapsActivity.this.finish();
 //        DisplayDialogFragment ddf = new DisplayDialogFragment(bleatMap.get(bid));
 //
@@ -149,7 +158,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawBleats(true);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnCameraChangeListener(this);
-        mMap.setInfoWindowAdapter(new FakeWindowAdapter(this));
+        mMap.setInfoWindowAdapter(new FakeWindowAdapter(parentActivity));
 
         /* end testing filterBleats */
 
@@ -204,7 +213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private MarkerInfo addMarker(Bleat bleat, int fontSize, LatLng location) {
-        IconGenerator iconFactory = new IconGenerator(this);
+        IconGenerator iconFactory = new IconGenerator(parentActivity);
         double lat = bleat.getLatitude(), lng = bleat.getLongitude();
         // Remove the random function below later
         if(location == null) {
@@ -275,7 +284,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         long curTime = Calendar.getInstance().getTimeInMillis();
         if (curTime - lastUpdated > Constants.WAIT_TIME || (forced.length > 0 && forced[0])) {  // 2 minutes
             LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-            FilterBleats filterBleats = new FilterBleats(this);
+            FilterBleats filterBleats = new FilterBleats(parentActivity);
             List<Bleat> result = filterBleats.filter(curTime - Constants.EXPIRE_DURATION, bounds);
             bleatMap.clear();
             for(MarkerInfo markerInfo : markerInfoMap.values()) {
@@ -582,7 +591,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("map", "onConnected called");
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) parentActivity.getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
