@@ -55,7 +55,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private HashMap<String, MarkerInfo> markerInfoMap;
     private Bleat bigBleat;
     private long lastUpdated;
-    private AppCompatActivity parentActivity;
+    private MainActivity parentActivity;
 
     public class MarkerInfo {
         public Bitmap bitmap;
@@ -105,13 +105,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         markerInfoMap = new HashMap<String, MarkerInfo>();
         bigBleat = null;
         lastUpdated = 0;
-        parentActivity = (AppCompatActivity)getActivity();
+        parentActivity = (MainActivity)getActivity();
 
         mGoogleApiClient = new GoogleApiClient.Builder(parentActivity).addConnectionCallbacks(this)
                 .addApi(LocationServices.API).build();
         mGoogleApiClient.connect();
 
-        FloatingActionButton button = (FloatingActionButton) getView().findViewById(R.id.bleat_button);
+        FloatingActionButton button = (FloatingActionButton) v.findViewById(R.id.bleat_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
@@ -152,7 +152,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         Log.d("map", "onMapReady called");
         mMap = googleMap;
+        assert (mMap != null);
         double ret[] = getGPS();
+        Log.d("map", ret[0] + " " + ret[1]);
         LatLng currentLocation = new LatLng(ret[0], ret[1]);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 15.0));
         drawBleats(true);
@@ -284,6 +286,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         long curTime = Calendar.getInstance().getTimeInMillis();
         if (curTime - lastUpdated > Constants.WAIT_TIME || (forced.length > 0 && forced[0])) {  // 2 minutes
             LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+            assert (mMap != null);
+            assert(((MapFragment)(parentActivity.adapter.getItem(0))).mMap != null);
             FilterBleats filterBleats = new FilterBleats(parentActivity);
             List<Bleat> result = filterBleats.filter(curTime - Constants.EXPIRE_DURATION, bounds);
             bleatMap.clear();
@@ -591,7 +595,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("map", "onConnected called");
-        SupportMapFragment mapFragment = (SupportMapFragment) parentActivity.getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment)getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -605,6 +609,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     protected double[] getGPS() {
         double[] ret = new double[2];
         try {
+
             mMap.setMyLocationEnabled(true);
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (location != null) {
@@ -615,6 +620,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 ret[1] = -122.17;
             }
         } catch (SecurityException se) {
+            ret[0] = 37.43;
+            ret[1] = -122.17;
+        } catch (Exception e) {
+            Log.d("error", "gg");
             ret[0] = 37.43;
             ret[1] = -122.17;
         }

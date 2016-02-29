@@ -20,7 +20,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                MapFragment tab1 = new MapFragment();
+                MapFragment tab1 = new MapFragment(); /*TODO: don't create new*/
                 return tab1;
             case 1:
                 UserFragment tab2 = new UserFragment();

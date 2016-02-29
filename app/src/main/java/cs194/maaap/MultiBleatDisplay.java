@@ -35,6 +35,7 @@ public class MultiBleatDisplay extends Activity {
         ArrayList<Bleat> bleats = new ArrayList<Bleat>();
         for (Bleat bleat : raw_bleats) bleats.add(bleat);
 
+        /*
         if (order.equals("new")) {
             Collections.sort(bleats, new Comparator<Bleat>() {
                 @Override
@@ -50,6 +51,7 @@ public class MultiBleatDisplay extends Activity {
                 }
             });
         }
+        */
 
         LinearLayout bleatLayout = (LinearLayout) findViewById(R.id.bleat_scroll_layout);
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

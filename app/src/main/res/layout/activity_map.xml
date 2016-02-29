@@ -7,7 +7,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="cs194.maaap.MapsActivity"
+        tools:context="cs194.maaap.MainActivity"
         android:layout_weight="1" />
 
     <android.support.design.widget.FloatingActionButton
