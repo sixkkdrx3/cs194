@@ -30,8 +30,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAgjGXqxnjn6EMmcHuwxghlKFk0CxC9wCU" />
 
-        <activity
-            android:name=".Start">
+        <activity android:name=".Start">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,20 +42,15 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
+            android:label="@string/title_activity_maps"></activity>
         <activity
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:name=".BleatDisplay">
-        </activity>
-
+            android:name=".BleatDisplay"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+        <activity android:name=".MultiBleatDisplay"></activity>
         <activity
-            android:name=".MultiBleatDisplay">
-        </activity>
-
-        <activity
-            android:name=".MultiBleatsDisplaySorted">
-        </activity>
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
