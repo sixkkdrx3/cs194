@@ -6,9 +6,13 @@ import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,9 +70,9 @@ public class UserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user, container, false);
-        Button button1 = (Button)v.findViewById(R.id.button);
-        Button button2 = (Button)v.findViewById(R.id.button2);
-        Button button3 = (Button)v.findViewById(R.id.button3);
+        final TextView button1 = (TextView)v.findViewById(R.id.button1);
+        final TextView button2 = (TextView)v.findViewById(R.id.button2);
+        final TextView button3 = (TextView)v.findViewById(R.id.button3);
 
         parentActivity = (MainActivity)getActivity();
         id = Settings.Secure.getString(parentActivity.getApplicationContext().getContentResolver(),
@@ -76,7 +80,51 @@ public class UserFragment extends Fragment {
         BleatAction bleatAction = new BleatAction(parentActivity, "Multi");
         GetBleats getBleats = new GetBleats(bleatAction);
         try { bleats = getBleats.execute().get(); } catch (Exception e) { }
+        List<Bleat> allbleats = getOwnBleats();
+        if (allbleats.size() != 0){
+            TextView tv1 = (TextView)v.findViewById(R.id.content_latest_bleat);
+            tv1.setText(allbleats.get(0).getMessage());
+        }
 
+        List<Bleat> voted = getVotedBleats();
+        if (voted.size() != 0){
+            TextView tv2 = (TextView)v.findViewById(R.id.content_upvoted_bleat);
+            tv2.setText(voted.get(0).getMessage());
+        }
+
+
+        List<Bleat> commented = getCommentedBleats();
+        if (commented.size() != 0){
+            TextView tv3 = (TextView)v.findViewById(R.id.content_commented_bleat);
+            tv3.setText(commented.get(0).getMessage());
+        }
+        button1.setTransformationMethod(null);
+        button2.setTransformationMethod(null);
+        button1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setBackgroundColor(getResources().getColor((R.color.material_grey_300)));
+                return false;
+            }
+        });
+
+        button2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setBackgroundColor(getResources().getColor((R.color.material_grey_300)));
+                return false;
+            }
+        });
+
+        button3.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setBackgroundColor(getResources().getColor((R.color.material_grey_300)));
+                return false;
+            }
+        });
+
+        button3.setTransformationMethod(null);
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent;
