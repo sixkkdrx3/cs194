@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/title_latest_bleat"
-            android:text="Your latest bleat..."/>
+            android:text="Your latest bleat : "/>
         <View
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/title_upvoted_bleat"
-            android:text="A bleat that you liked..." />
+            android:text="You liked : " />
 
         <View
             android:layout_width="match_parent"
@@ -166,7 +166,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/title_commented_bleat"
-            android:text="A bleat that you commented on..."/>
+            android:text="You commented on : "/>
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
