@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.TextView;
+
 /**
  * Citation: http://stackoverflow.com/questions/5486789/how-do-i-make-a-splash-screen.
  */
@@ -28,4 +32,6 @@ public class Start extends Activity {
             }
         }, LOADING_LENGTH);
     }
+
+
 }
