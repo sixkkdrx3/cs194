@@ -34,33 +34,50 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="35dp"
             android:background="@null"
-            android:gravity="left|top"
+            android:gravity="start|top"
             android:maxLength="140"/>
-        <TextView
-            android:id="@+id/bleat_title"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="bleat!"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:background="#90C3D4"
-            android:textColor="#ffffff"
-            />
-
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/createbleat_bottom_bar"
+            android:orientation="horizontal" android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/bleat_title"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:padding="10dp"
+                android:text="bleat!"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:background="#90C3D4"
+                android:textColor="#ffffff"
+                android:layout_toLeftOf="@+id/bleat_send"
+                />
+            <TextView
+                android:id="@+id/bleat_send"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:padding="10dp"
+                android:text="Send"
+                android:textSize="22sp"
+                android:background="#90C3D4"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/submit_button"
+        android:id="@+id/camera_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_send_white"
+        android:src="@drawable/ic_photo_camera"
         android:layout_margin="16dp"
         app:backgroundTint="#658894"
-        app:layout_anchorGravity="bottom|right|end"
+        app:layout_anchorGravity="bottom|center"
         app:layout_anchor="@id/msg"
          />
 
