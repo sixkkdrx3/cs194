@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:allowBackup="true"
@@ -41,6 +44,8 @@
             android:name=".BleatDisplay"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity android:name=".MultiBleatDisplay"></activity>
+        <activity android:name=".CameraActivity"></activity>
+        <activity android:name=".BleatCreateActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"

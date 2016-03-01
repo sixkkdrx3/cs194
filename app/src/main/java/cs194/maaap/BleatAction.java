@@ -35,6 +35,10 @@ public class BleatAction {
         mapper = new DynamoDBMapper(ddbClient);
         if (activityType.equals("MapsActivity"))
             coords = ((MapFragment)(((MainActivity)activity).adapter.getItem(0))).getGPS();
+        else if (activityType.equals("BleatCreateActivity"))
+        {
+            coords = ((BleatCreateActivity) activity).coords;
+        }
     }
 
     public void saveBleat(String message) {

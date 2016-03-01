@@ -4,10 +4,15 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,7 +26,11 @@ import java.util.Comparator;
 import java.util.List;
 
 
+
 public class MultiBleatDisplay extends Activity {
+
+    private int maxPhotoWidth = 10000;
+    private int maxPhotoHeight = 512;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +115,22 @@ public class MultiBleatDisplay extends Activity {
 
             bleatLayout.addView(view);
             TextView bleatText = (TextView)view.findViewById(R.id.bleat_item_text);
-            bleatText.setText(bleat.getMessage());
+            if(bleat.getMessage().length() < 200) {
+                bleatText.setText(bleat.getMessage());
+            }
+            else
+            {
+                ViewGroup parent = (ViewGroup) bleatText.getParent();
+                int index = parent.indexOfChild(bleatText);
+                parent.removeView(bleatText);
+                ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatlist_photo, parent, false);
+                parent.addView(msgPhoto, index);
+                byte[] decodedByte = Base64.decode(bleat.getMessage(), 0);
+                Bitmap fullBitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+                Pair<Integer, Integer> size = MapFragment.scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), maxPhotoWidth, maxPhotoHeight);
+                Bitmap bitmap = fullBitmap.createScaledBitmap(fullBitmap, size.first, size.second, true);
+                msgPhoto.setImageBitmap(bitmap);
+            }
 
             final TextView voteText = (TextView)view.findViewById(R.id.num);
             voteText.setText(Integer.toString(bleat.computeNetUpvotes()));

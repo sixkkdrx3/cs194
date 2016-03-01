@@ -4,13 +4,17 @@ package cs194.maaap;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,8 +38,22 @@ public class BleatDisplay extends Activity {
         final Bleat bleat = (Bleat)i.getSerializableExtra("myBleat");
 
         TextView message = (TextView)findViewById(R.id.bleat_content);
-        Log.d("valll", bleat.getMessage());
-        message.setText(bleat.getMessage());
+        if(bleat.getMessage().length()<200) {
+            Log.d("valll", bleat.getMessage());
+            message.setText(bleat.getMessage());
+        }
+        else
+        {
+            ViewGroup parent = (ViewGroup) message.getParent();
+            int index = parent.indexOfChild(message);
+            parent.removeView(message);
+            ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatsingle_photo, parent, false);
+            byte[] decodedByte = Base64.decode(bleat.getMessage(), 0);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+            msgPhoto.setImageBitmap(bitmap);
+            parent.addView(msgPhoto, index);
+
+        }
 
         final ImageView up = (ImageView)findViewById(R.id.up);
         final ImageView down = (ImageView)findViewById(R.id.down);

@@ -9,9 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -56,6 +55,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private Bleat bigBleat;
     private long lastUpdated;
     private MainActivity parentActivity;
+    private int thumbnailSize = 128;
 
     public class MarkerInfo {
         public Bitmap bitmap;
@@ -114,9 +114,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         FloatingActionButton button = (FloatingActionButton) v.findViewById(R.id.bleat_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
-                InputDialogFragment f = new InputDialogFragment();
-                f.show(ft, "postBleat");
+                Intent intent = new Intent(parentActivity, BleatCreateActivity.class);
+                intent.putExtra("coords", getGPS());
+                parentActivity.startActivity(intent);
             }
         });
         return v;
@@ -214,33 +214,58 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         return message;
     }
 
-    private MarkerInfo addMarker(Bleat bleat, int fontSize, LatLng location) {
-        IconGenerator iconFactory = new IconGenerator(parentActivity);
-        double lat = bleat.getLatitude(), lng = bleat.getLongitude();
-        // Remove the random function below later
-        if(location == null) {
-            if (bleat.getTime() < 1455059660758L) {
-                lat += (((bleat.getBID() + " lat").hashCode() % 1024) - 512) / 1024.0 * 0.005;
-                lng += (((bleat.getBID() + " lng").hashCode() % 1024) - 512) / 1024.0 * 0.005;
-            }
+    public static Pair<Integer, Integer> scalePreserveRatio(int originalWidth, int originalHeight, int scaledWidth, int scaledHeight)
+    {
+        if(originalWidth*scaledHeight < originalHeight*scaledWidth)
+        {
+            return new Pair<Integer, Integer>(originalWidth*scaledHeight/originalHeight, scaledHeight);
         }
         else
         {
-            lat = location.latitude;
-            lng = location.longitude;
+            return new Pair<Integer, Integer>(scaledWidth, originalHeight*scaledWidth/originalWidth);
         }
+    }
 
-        String message = wordWrap(bleat.getMessage(), fontSize);
-        iconFactory.setTextAppearance(getTextStyle(fontSize));
-        Bitmap markerBitmap = iconFactory.makeIcon(message);
+    private MarkerInfo addMarker(Bleat bleat, int fontSize, LatLng location) {
+        Bitmap markerBitmap;
+        double lat = bleat.getLatitude(), lng = bleat.getLongitude();
+        float anchorU, anchorV;
+        if(bleat.getMessage().length() < 200) {
+            IconGenerator iconFactory = new IconGenerator(parentActivity);
+            // Remove the random function below later
+            if (location == null) {
+                if (bleat.getTime() < 1455059660758L) {
+                    lat += (((bleat.getBID() + " lat").hashCode() % 1024) - 512) / 1024.0 * 0.005;
+                    lng += (((bleat.getBID() + " lng").hashCode() % 1024) - 512) / 1024.0 * 0.005;
+                }
+            } else {
+                lat = location.latitude;
+                lng = location.longitude;
+            }
+
+            String message = wordWrap(bleat.getMessage(), fontSize);
+            iconFactory.setTextAppearance(getTextStyle(fontSize));
+            markerBitmap = iconFactory.makeIcon(message);
+            anchorU = iconFactory.getAnchorU();
+            anchorV = iconFactory.getAnchorV();
+        }
+        else
+        {
+            byte[] imageBytes = Base64.decode(bleat.getMessage().getBytes(), Base64.DEFAULT);
+            Bitmap fullBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            Pair<Integer, Integer> size = scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), thumbnailSize, thumbnailSize);
+            markerBitmap = fullBitmap.createScaledBitmap(fullBitmap, size.first, size.second, true);
+            anchorU = 0.5f;
+            anchorV = 1.0f;
+        }
         MarkerOptions markerOptions = new MarkerOptions().
                 icon(BitmapDescriptorFactory.fromBitmap(markerBitmap)).
                 position(new LatLng(lat, lng)).
-                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+                anchor(anchorU, anchorV);
         markerOptions.snippet(bleat.getBID());
-        markerOptions.title(message);
+        //markerOptions.title(message);
         //Marker m = mMap.addMarker(markerOptions);
-        MarkerInfo markerInfo = new MarkerInfo(markerBitmap, new Bleat[]{bleat}, markerOptions, iconFactory.getAnchorU(), iconFactory.getAnchorV(), false, location != null);
+        MarkerInfo markerInfo = new MarkerInfo(markerBitmap, new Bleat[]{bleat}, markerOptions, anchorU, anchorV, false, location != null);
         markerInfoMap.put(bleat.getBID(), markerInfo);
         return markerInfo;
     }
