@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,19 @@ public class BleatDisplay extends Activity {
             byte[] decodedByte = Base64.decode(bleat.getMessage(), 0);
             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
             msgPhoto.setImageBitmap(bitmap);
+            final BleatAction bleatAction = new BleatAction(this, "bleatDisplay");
+
+            msgPhoto.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Log.d("click", "clicked");
+                    DownloadPhoto downloadPhoto = new DownloadPhoto(bleatAction);
+                    File file = null;
+                    try {
+                        file = downloadPhoto.execute(bleat.getPhotoID()).get();
+                    } catch (Exception e) { }
+                    /* TODO: display file */
+                }
+            });
             parent.addView(msgPhoto, index);
 
         }
@@ -191,8 +205,10 @@ public class BleatDisplay extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 final String res = tv.getText().toString();
-                SaveComment saveComment = new SaveComment(commentAction);
-                saveComment.execute(res);
+                if (res.length() > 0) {
+                    SaveComment saveComment = new SaveComment(commentAction);
+                    saveComment.execute(res);
+                }
                 tv.setText("");
             }
         });

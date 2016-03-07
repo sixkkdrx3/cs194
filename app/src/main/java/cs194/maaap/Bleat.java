@@ -19,6 +19,7 @@ public class Bleat implements Serializable {
     private HashSet<String> downvotes;
     private HashMap<String, String> reports;
     private String authorID;
+    private String photoID;
 
     public Bleat() {
         upvotes = new HashSet<String>();
@@ -75,6 +76,12 @@ public class Bleat implements Serializable {
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
+
+    @DynamoDBAttribute(attributeName = "PhotoID")
+    public String getPhotoID() {
+        return photoID;
+    }
+    public void setPhotoID(String photoID) { this.photoID = photoID; }
 
     public void setCoordinates(double latitude, double longitude) {
         setLatitude(latitude);

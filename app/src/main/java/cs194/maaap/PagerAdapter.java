@@ -9,9 +9,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
+    MapFragment tab1;
+    UserFragment tab2;
 
     public PagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
+        this.tab1 = null;
+        this.tab2 = null;
         this.mNumOfTabs = NumOfTabs;
     }
 
@@ -20,10 +24,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                MapFragment tab1 = new MapFragment(); /*TODO: don't create new*/
+                if (tab1 == null) tab1 = new MapFragment();
                 return tab1;
             case 1:
-                UserFragment tab2 = new UserFragment();
+                if (tab2 == null) tab2 = new UserFragment();
                 return tab2;
             default:
                 return null;

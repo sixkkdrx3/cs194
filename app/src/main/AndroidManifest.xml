@@ -33,6 +33,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAgjGXqxnjn6EMmcHuwxghlKFk0CxC9wCU" />
 
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
         <activity android:name=".Start">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
