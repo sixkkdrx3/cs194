@@ -1,16 +1,20 @@
 package cs194.maaap;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -34,6 +38,7 @@ public class UserFragment extends Fragment {
         parentActivity = (MainActivity)getActivity();
         id = Settings.Secure.getString(parentActivity.getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+<<<<<<< HEAD
         try {
             BleatAction bleatAction = new BleatAction(parentActivity, "Multi");
             GetBleats getBleats = new GetBleats(bleatAction);
@@ -64,38 +69,27 @@ public class UserFragment extends Fragment {
             TextView tv3 = (TextView)v.findViewById(R.id.content_commented_bleat);
             tv3.setText(commented.get(0).getMessage());
         }
+=======
+        BleatAction bleatAction = new BleatAction(parentActivity, "Multi");
+        GetBleats getBleats = new GetBleats(bleatAction);
+        try { bleats = getBleats.execute().get(); } catch (Exception e) { }
+
+
+>>>>>>> 42425f7813cea6a46eaf956cea8ecfe1c95eaef9
         button1.setTransformationMethod(null);
         button2.setTransformationMethod(null);
-        button1.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setBackgroundColor(getResources().getColor((R.color.material_grey_300)));
-                return false;
-            }
-        });
-
-        button2.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setBackgroundColor(getResources().getColor((R.color.material_grey_300)));
-                return false;
-            }
-        });
-
-        button3.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setBackgroundColor(getResources().getColor((R.color.material_grey_300)));
-                return false;
-            }
-        });
-
         button3.setTransformationMethod(null);
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
+<<<<<<< HEAD
                 intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getOwnBleats(id)));
+=======
+                intent.putExtra("title","Your bleats");
+                List<Bleat> bleats = getOwnBleats();
+                intent.putExtra("myBleats", bleats.toArray(new Bleat[bleats.size()]));
+>>>>>>> 42425f7813cea6a46eaf956cea8ecfe1c95eaef9
                 parentActivity.startActivity(intent);
             }
         });
@@ -104,7 +98,13 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
+<<<<<<< HEAD
                 intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getVotedBleats(id)));
+=======
+                intent.putExtra("title","Your liked bleats");
+                List<Bleat> bleats = getVotedBleats();
+                intent.putExtra("myBleats", bleats.toArray(new Bleat[bleats.size()]));
+>>>>>>> 42425f7813cea6a46eaf956cea8ecfe1c95eaef9
                 parentActivity.startActivity(intent);
             }
         });
@@ -113,7 +113,13 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
+<<<<<<< HEAD
                 intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getCommentedBleats(id)));
+=======
+                intent.putExtra("title","Your commented bleats");
+                List<Bleat> bleats = getCommentedBleats();
+                intent.putExtra("myBleats", bleats.toArray(new Bleat[bleats.size()]));
+>>>>>>> 42425f7813cea6a46eaf956cea8ecfe1c95eaef9
                 parentActivity.startActivity(intent);
             }
         });

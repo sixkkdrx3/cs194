@@ -36,31 +36,19 @@ public class MultiBleatDisplay extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.multibleat_display);
-
+        Bundle extras = getIntent().getExtras();
+        String msg = null;
+        if (extras != null){
+            msg = extras.getString("title");
+        }
+        TextView tv = (TextView)findViewById(R.id.multi_title);
+        tv.setText(msg);
         Intent intent = getIntent();
         String[] myBIDs = (String[])intent.getSerializableExtra("myBIDs");
         //String order = intent.getStringExtra("order");
 
         ArrayList<Bleat> bleats = new ArrayList<Bleat>();
         for (String bid : myBIDs) bleats.add(DataStore.getInstance().getBleat(bid));
-
-        /*
-        if (order.equals("new")) {
-            Collections.sort(bleats, new Comparator<Bleat>() {
-                @Override
-                public int compare(Bleat lhs, Bleat rhs) {
-                    return (int) (- lhs.getTime() + rhs.getTime());
-                }
-            });
-        } else {
-            Collections.sort(bleats, new Comparator<Bleat>() {
-                @Override
-                public int compare(Bleat lhs, Bleat rhs) {
-                    return (int) (- lhs.computeNetUpvotes() + rhs.computeNetUpvotes());
-                }
-            });
-        }
-        */
 
         LinearLayout bleatLayout = (LinearLayout) findViewById(R.id.bleat_scroll_layout);
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -72,6 +60,7 @@ public class MultiBleatDisplay extends Activity {
                 public void onClick(View v) {
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     Intent displayIntent;
+                    Log.d("val", "valerie!");
                     displayIntent = new Intent(MultiBleatDisplay.this, BleatDisplay.class);
                     displayIntent.putExtra("myBID", bleat.getBID());
                     MultiBleatDisplay.this.startActivity(displayIntent);
