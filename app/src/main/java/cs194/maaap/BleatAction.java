@@ -63,6 +63,7 @@ public class BleatAction {
         bleat.setCoordinates(coords[0], coords[1]);
         bleat.setTime(Calendar.getInstance().getTimeInMillis());
         bleat.setAuthorID(id);
+        DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
     }
 
@@ -78,6 +79,7 @@ public class BleatAction {
         bleat.setTime(Calendar.getInstance().getTimeInMillis());
         bleat.setAuthorID(id);
         bleat.setPhotoID(photoID);
+        DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
     }
 
@@ -93,6 +95,7 @@ public class BleatAction {
         if (upVotes.contains(id)) { // un-do upvote
             upVotes.remove(id);
             bleat.setUpvotes(upVotes);
+            DataStore.getInstance().updateBleats(bleat);
             mapper.save(bleat);
             return;
         }
@@ -102,6 +105,7 @@ public class BleatAction {
         }
         upVotes.add(id);
         bleat.setUpvotes(upVotes);
+        DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
     }
 
@@ -115,6 +119,7 @@ public class BleatAction {
         if (downVotes.contains(id)) { // un-do downvote
             downVotes.remove(id);
             bleat.setDownvotes(downVotes);
+            DataStore.getInstance().updateBleats(bleat);
             mapper.save(bleat);
             return;
         }
@@ -124,6 +129,7 @@ public class BleatAction {
         }
         downVotes.add(id);
         bleat.setDownvotes(downVotes);
+        DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
     }
 

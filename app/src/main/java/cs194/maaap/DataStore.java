@@ -2,8 +2,10 @@ package cs194.maaap;
 
 import android.provider.ContactsContract;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -17,6 +19,8 @@ public class DataStore {
     public long commentLastUpdated;
 
     public DataStore() {
+        downloadedBleats = new HashMap<String, Bleat>();
+        downloadedComments = new HashMap<String, Comment>();
         bleatLastUpdated = commentLastUpdated = 0;
     }
 
@@ -40,11 +44,51 @@ public class DataStore {
         downloadedComments.put(comment.getCID(), comment);
         commentLastUpdated = Calendar.getInstance().getTimeInMillis();
     }
-    public void updateComments(Comment[] comments) {
+    public void updateComments(List<Comment> comments) {
         for (Comment comment : comments)
             downloadedComments.put(comment.getCID(), comment);
         commentLastUpdated = Calendar.getInstance().getTimeInMillis();
     }
+
+    public List<Bleat> getOwnBleats(String id) {
+        List<Bleat> result = new ArrayList<Bleat>();
+        for (Bleat bleat : downloadedBleats.values()) {
+            if (bleat.getAuthorID() == null) continue;
+            if (bleat.getAuthorID().equals(id)) {
+                result.add(bleat);
+            }
+        }
+        return result;
+    }
+
+    public List<Bleat> getVotedBleats(String id) {
+        List<Bleat> result = new ArrayList<Bleat>();
+        for (Bleat bleat : downloadedBleats.values()) {
+            if (bleat.getUpvotes().contains(id) || bleat.getDownvotes().contains(id)) {
+                result.add(bleat);
+            }
+        }
+        return result;
+    }
+
+    public List<Bleat> getCommentedBleats(String id) {
+        HashSet<String> commentedBIDs = new HashSet<String>();
+        for (Comment comment : downloadedComments.values()) {
+            if (comment.getAuthorID() == null) continue;
+            if (comment.getAuthorID().equals(id)) {
+                commentedBIDs.add(comment.getBID());
+            }
+        }
+
+        List<Bleat> result = new ArrayList<Bleat>();
+        for (Bleat bleat : downloadedBleats.values()) {
+            if (commentedBIDs.contains(bleat.getBID())) {
+                result.add(bleat);
+            }
+        }
+        return result;
+    }
+
 
     private static final DataStore holder = new DataStore();
     public static DataStore getInstance() {return holder;}

@@ -121,7 +121,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         try {
             BleatAction bleatAction = new BleatAction(parentActivity, "Main");
             GetBleats getBleats = new GetBleats(bleatAction);
-            DataStore.getInstance().addBleats(getBleats.execute().get());
+            DataStore.getInstance().updateBleats(getBleats.execute().get());
         } catch (Exception e) { }
         return v;
     }
@@ -134,12 +134,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         Intent displayIntent;
         if(bleats.length == 1) {
             displayIntent = new Intent(parentActivity, BleatDisplay.class);
-            displayIntent.putExtra("myBleat", bleats[0]);
+            displayIntent.putExtra("myBID", bleats[0].getBID());
         }
         else
         {
             displayIntent = new Intent(parentActivity, MultiBleatDisplay.class);
-            displayIntent.putExtra("myBleats", bleats);
+            //Temporary hack
+            List<Bleat> blah = new ArrayList<Bleat>();
+            for (Bleat bleat : bleats) blah.add(bleat);
+            displayIntent.putExtra("myBIDs", (Utils.extractBIDs(blah)).toArray(new String[blah.size()]));
+            //End temporary hack
         }
 
         parentActivity.startActivity(displayIntent);

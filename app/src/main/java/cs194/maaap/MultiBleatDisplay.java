@@ -38,11 +38,11 @@ public class MultiBleatDisplay extends Activity {
         setContentView(R.layout.multibleat_display);
 
         Intent intent = getIntent();
-        Bleat[] raw_bleats = (Bleat[])intent.getSerializableExtra("myBleats");
-        String order = intent.getStringExtra("order");
+        String[] myBIDs = (String[])intent.getSerializableExtra("myBIDs");
+        //String order = intent.getStringExtra("order");
 
         ArrayList<Bleat> bleats = new ArrayList<Bleat>();
-        for (Bleat bleat : raw_bleats) bleats.add(bleat);
+        for (String bid : myBIDs) bleats.add(DataStore.getInstance().getBleat(bid));
 
         /*
         if (order.equals("new")) {
@@ -73,7 +73,7 @@ public class MultiBleatDisplay extends Activity {
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     Intent displayIntent;
                     displayIntent = new Intent(MultiBleatDisplay.this, BleatDisplay.class);
-                    displayIntent.putExtra("myBleat", bleat);
+                    displayIntent.putExtra("myBID", bleat.getBID());
                     MultiBleatDisplay.this.startActivity(displayIntent);
                 }
             });
