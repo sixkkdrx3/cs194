@@ -2,16 +2,20 @@ package cs194.maaap;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,6 +166,27 @@ public class BleatDisplay extends Activity {
 //                return false;
 //            }
 //        });
+
+        Button reportBtn = (Button) findViewById(R.id.report_button);
+        reportBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final AlertDialog alertDialog = new AlertDialog.Builder(BleatDisplay.this).create();
+                alertDialog.setTitle("Report Received");
+                alertDialog.setMessage("Thank you for reporting spam.");
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int which)
+                    {
+                        // Write your code here to execute after dialog    closed
+                        alertDialog.dismiss();
+                    }
+                });
+
+                // Showing Alert Message
+                alertDialog.show();
+
+            }
+        });
+
         Button button = (Button)findViewById(R.id.comment_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
