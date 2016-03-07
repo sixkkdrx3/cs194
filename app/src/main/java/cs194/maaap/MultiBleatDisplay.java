@@ -36,16 +36,12 @@ public class MultiBleatDisplay extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.multibleat_display);
-        Bundle extras = getIntent().getExtras();
-        String msg = null;
-        if (extras != null){
-            msg = extras.getString("title");
-        }
+
+        Intent intent = getIntent();
+        String msg = intent.getStringExtra("title");
         TextView tv = (TextView)findViewById(R.id.multi_title);
         tv.setText(msg);
-        Intent intent = getIntent();
         String[] myBIDs = (String[])intent.getSerializableExtra("myBIDs");
-        //String order = intent.getStringExtra("order");
 
         ArrayList<Bleat> bleats = new ArrayList<Bleat>();
         for (String bid : myBIDs) bleats.add(DataStore.getInstance().getBleat(bid));
