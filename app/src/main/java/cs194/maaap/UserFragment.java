@@ -95,8 +95,7 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
-                List <String> ownBIDs = Utils.extractBIDs(DataStore.getInstance().getOwnBleats(id));
-                intent.putExtra("myBIDs", ownBIDs.toArray(new String[ownBIDs.size()]));
+                intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getOwnBleats(id)));
                 parentActivity.startActivity(intent);
             }
         });
@@ -105,8 +104,7 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
-                List <String> votedBIDs = Utils.extractBIDs(DataStore.getInstance().getVotedBleats(id));
-                intent.putExtra("myBIDs", votedBIDs.toArray(new String[votedBIDs.size()]));
+                intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getVotedBleats(id)));
                 parentActivity.startActivity(intent);
             }
         });
@@ -115,8 +113,7 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
-                List <String> commentedBIDs = Utils.extractBIDs(DataStore.getInstance().getCommentedBleats(id));
-                intent.putExtra("myBIDs", commentedBIDs.toArray(new String[commentedBIDs.size()]));
+                intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getCommentedBleats(id)));
                 parentActivity.startActivity(intent);
             }
         });

@@ -58,7 +58,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     public class MarkerInfo {
         public Bitmap bitmap;
-        public Bleat[] bleats;
+        public String[] bids;
         public Marker marker;
         public MarkerOptions markerOptions;
         public float anchorU;
@@ -66,9 +66,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         public boolean isConsolidated;
         public boolean forceLoc;
 
-        public MarkerInfo(Bitmap bitmap, Bleat[] bleats, MarkerOptions markerOptions, float anchorU, float anchorV, boolean isConsolidated, boolean forceLoc) {
+        public MarkerInfo(Bitmap bitmap, String[] bids, MarkerOptions markerOptions, float anchorU, float anchorV, boolean isConsolidated, boolean forceLoc) {
             this.bitmap = bitmap;
-            this.bleats = bleats;
+            this.bids = bids;
             this.marker = null;
             this.markerOptions = markerOptions;
             this.anchorU = anchorU;
@@ -77,13 +77,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             this.forceLoc = forceLoc;
         }
 
-        public Bleat maxBleat()
-        {
-            Bleat maxb = bleats[0];
-            for(int i = 1; i < bleats.length; i++)
-            {
-                if(bleats[i].gt(maxb))
-                    maxb = bleats[i];
+        public Bleat maxBleat() {
+            Bleat maxb = DataStore.getInstance().getBleat(bids[0]);
+            for(int i = 1; i < bids.length; i++) {
+                Bleat cur = DataStore.getInstance().getBleat(bids[i]);
+                if(cur.gt(maxb))
+                    maxb = cur;
             }
             return maxb;
         }
@@ -130,20 +129,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
-        Bleat[] bleats = markerInfoMap.get(bid).bleats;
+        String[] bids = markerInfoMap.get(bid).bids;
         Intent displayIntent;
-        if(bleats.length == 1) {
+        if(bids.length == 1) {
             displayIntent = new Intent(parentActivity, BleatDisplay.class);
-            displayIntent.putExtra("myBID", bleats[0].getBID());
+            displayIntent.putExtra("myBID", bids[0]);
         }
         else
         {
             displayIntent = new Intent(parentActivity, MultiBleatDisplay.class);
-            //Temporary hack
-            List<Bleat> blah = new ArrayList<Bleat>();
-            for (Bleat bleat : bleats) blah.add(bleat);
-            displayIntent.putExtra("myBIDs", (Utils.extractBIDs(blah)).toArray(new String[blah.size()]));
-            //End temporary hack
+            displayIntent.putExtra("myBIDs", bids);
         }
 
         parentActivity.startActivity(displayIntent);
@@ -310,7 +305,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         markerOptions.snippet(bleats[0].getBID());
         //markerOptions.title(message);
         //Marker m = mMap.addMarker(markerOptions);
-        MarkerInfo markerInfo = new MarkerInfo(markerBitmap, bleats, markerOptions, 0.5f, 1.0f, true, location != null);
+        MarkerInfo markerInfo = new MarkerInfo(markerBitmap, Utils.extractBIDs(bleats), markerOptions, 0.5f, 1.0f, true, location != null);
         markerInfoMap.put(bleats[0].getBID(), markerInfo);
         return markerInfo;
     }
@@ -466,13 +461,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                                 if (mi.gt(mj)) //turn mj into a consolidated bleat;
                                 {
                                     //mj.marker.remove();
-                                    markerInfoMap.remove(mj.bleats[0].getBID());
-                                    mj = addConsolidatedMarker(new Bleat[]{mj.bleats[0]}, null);
+                                    markerInfoMap.remove(mj.bids[0]);
+                                    mj = addConsolidatedMarker(new Bleat[]{
+                                            DataStore.getInstance().getBleat(mj.bids[0])
+                                    }, null);
                                     entries[j].setValue(mj);
                                 } else {
                                     //mi.marker.remove();
-                                    markerInfoMap.remove(mi.bleats[0].getBID());
-                                    mi = addConsolidatedMarker(new Bleat[]{mi.bleats[0]}, null);
+                                    markerInfoMap.remove(mi.bids[0]);
+                                    mi = addConsolidatedMarker(new Bleat[]{
+                                            DataStore.getInstance().getBleat(mi.bids[0])
+                                    }, null);
                                     entries[i].setValue(mi);
                                 }
                             } else if (mi.isConsolidated) //merge them
@@ -482,11 +481,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                                 hasChanged = true;
                                 //mi.marker.remove();
                                 //mj.marker.remove();
-                                markerInfoMap.remove(mi.bleats[0].getBID());
-                                markerInfoMap.remove(mj.bleats[0].getBID());
-                                Bleat[] bothBleats = new Bleat[mi.bleats.length + mj.bleats.length];
-                                System.arraycopy(mi.bleats, 0, bothBleats, 0, mi.bleats.length);
-                                System.arraycopy(mj.bleats, 0, bothBleats, mi.bleats.length, mj.bleats.length);
+                                markerInfoMap.remove(mi.bids[0]);
+                                markerInfoMap.remove(mj.bids[0]);
+                                Bleat[] bothBleats = new Bleat[mi.bids.length + mj.bids.length];
+                                System.arraycopy(DataStore.getInstance().getBleats(mi.bids), 0, bothBleats, 0, mi.bids.length);
+                                System.arraycopy(DataStore.getInstance().getBleats(mj.bids), 0, bothBleats, mi.bids.length, mj.bids.length);
                                 mi = addConsolidatedMarker(bothBleats, null);
                                 entries[i].setValue(mi);
                                 entries[j] = null;

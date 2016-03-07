@@ -28,6 +28,11 @@ public class DataStore {
     public HashMap<String, Comment> getDownloadedComments() {return downloadedComments;}
 
     public Bleat getBleat(String BID) {return downloadedBleats.get(BID);}
+    public Bleat[] getBleats(String[] BIDs) {
+        Bleat[] bleats = new Bleat[BIDs.length];
+        for (int i=0;i<BIDs.length;++i) bleats[i] = getBleat(BIDs[i]);
+        return bleats;
+    }
     public Comment getComment(String CID) {return downloadedComments.get(CID);}
 
     public void updateBleats(Bleat bleat) {

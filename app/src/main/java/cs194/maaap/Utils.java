@@ -7,9 +7,17 @@ import java.util.List;
  * Created by kaidi on 3/7/16.
  */
 public class Utils {
-    static public List<String> extractBIDs(List<Bleat> bleats) {
-        List<String> BIDs = new ArrayList<String>();
-        for (Bleat bleat : bleats) BIDs.add(bleat.getBID());
+    static public String[] extractBIDs(List<Bleat> bleats) {
+        String[] BIDs = new String[bleats.size()];
+        int cnt = 0;
+        for (Bleat bleat : bleats) BIDs[cnt++] = bleat.getBID();
+        return BIDs;
+    }
+
+    static public String[] extractBIDs(Bleat[] bleats) {
+        String[] BIDs = new String[bleats.length];
+        int cnt = 0;
+        for (Bleat bleat : bleats) BIDs[cnt++] = bleat.getBID();
         return BIDs;
     }
 }
