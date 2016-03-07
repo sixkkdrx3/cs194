@@ -34,22 +34,22 @@ public class BleatDisplay extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("valll", "hi from val");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.display);
-        Log.d("valll", "hiiii");
         Intent i = getIntent();
         final Bleat bleat = (Bleat)i.getSerializableExtra("myBleat");
 
         TextView message = (TextView)findViewById(R.id.bleat_content);
         if(bleat.getMessage().length()<200) {
-            Log.d("valll", bleat.getMessage());
             message.setText(bleat.getMessage());
+            Log.d("val", "lol");
         }
         else
         {
+            Log.d("val","hi from val");
             ViewGroup parent = (ViewGroup) message.getParent();
             int index = parent.indexOfChild(message);
+            Log.d("val", "xy" + index);
             parent.removeView(message);
             ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatsingle_photo, parent, false);
             byte[] decodedByte = Base64.decode(bleat.getMessage(), 0);

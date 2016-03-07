@@ -19,11 +19,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Maaap");
+        getSupportActionBar().hide();
+        getSupportActionBar().hide();
+       // getSupportActionBar().setTitle(null);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Map"));
-        tabLayout.addTab(tabLayout.newTab().setText("Me"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.map));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.me));
+  //      tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.message));
+//        tabLayout.addTab(tabLayout.newTab().setText("Map"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Me"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
