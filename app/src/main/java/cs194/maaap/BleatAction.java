@@ -1,14 +1,20 @@
 package cs194.maaap;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 
 import android.app.Activity;
 import android.content.Context;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.UUID;
 import java.util.List;
@@ -23,6 +29,7 @@ public class BleatAction {
     private DynamoDBMapper mapper;
     double coords[];
     private Activity activity;
+    private TransferUtility transferUtility;
 
     public BleatAction(Activity activity, String activityType) {
         this.activity = activity;
@@ -39,6 +46,10 @@ public class BleatAction {
         {
             coords = ((BleatCreateActivity) activity).coords;
         }
+
+        AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
+        s3.setRegion(Region.getRegion(Regions.US_EAST_1));
+        transferUtility = new TransferUtility(s3, activity.getApplicationContext());
     }
 
     public void saveBleat(String message) {
@@ -52,6 +63,23 @@ public class BleatAction {
         bleat.setCoordinates(coords[0], coords[1]);
         bleat.setTime(Calendar.getInstance().getTimeInMillis());
         bleat.setAuthorID(id);
+        DataStore.getInstance().updateBleats(bleat);
+        mapper.save(bleat);
+    }
+
+    public void saveBleatWithPhoto(String message, String photoID) {
+        String bid = UUID.randomUUID().toString();
+        String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
+                Secure.ANDROID_ID);
+
+        Bleat bleat = new Bleat();
+        bleat.setMessage(message);
+        bleat.setBID(bid);
+        bleat.setCoordinates(coords[0], coords[1]);
+        bleat.setTime(Calendar.getInstance().getTimeInMillis());
+        bleat.setAuthorID(id);
+        bleat.setPhotoID(photoID);
+        DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
     }
 
@@ -67,6 +95,7 @@ public class BleatAction {
         if (upVotes.contains(id)) { // un-do upvote
             upVotes.remove(id);
             bleat.setUpvotes(upVotes);
+            DataStore.getInstance().updateBleats(bleat);
             mapper.save(bleat);
             return;
         }
@@ -76,6 +105,7 @@ public class BleatAction {
         }
         upVotes.add(id);
         bleat.setUpvotes(upVotes);
+        DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
     }
 
@@ -89,6 +119,7 @@ public class BleatAction {
         if (downVotes.contains(id)) { // un-do downvote
             downVotes.remove(id);
             bleat.setDownvotes(downVotes);
+            DataStore.getInstance().updateBleats(bleat);
             mapper.save(bleat);
             return;
         }
@@ -98,6 +129,7 @@ public class BleatAction {
         }
         downVotes.add(id);
         bleat.setDownvotes(downVotes);
+        DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
     }
 
@@ -105,5 +137,24 @@ public class BleatAction {
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
         PaginatedScanList<Bleat> result = mapper.scan(Bleat.class, scanExpression);
         return result;
+    }
+
+    public void uploadPhoto(File file) {
+        String id = file.getName();
+        TransferObserver observer = transferUtility.upload(
+                "cs194",
+                id,
+                file
+        );
+    }
+
+    public File downloadPhoto(String id) {
+        File file = null;
+        TransferObserver observer = transferUtility.download(
+                "cs194",
+                id,
+                file
+        );
+        return file;
     }
 }

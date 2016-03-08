@@ -37,7 +37,7 @@ public class CommentAction {
         this.bid = bid;
     }
 
-    public void saveComment(String message) {
+    public Comment saveComment(String message) {
         String cid = UUID.randomUUID().toString();
         String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
@@ -48,8 +48,10 @@ public class CommentAction {
         comment.setBID(bid);
         comment.setTime(Calendar.getInstance().getTimeInMillis());
         comment.setAuthorID(id);
+        DataStore.getInstance().updateComments(comment);
         mapper.save(comment);
 
+        return comment;
     }
 
     public void upvoteComment(Comment comment) {
@@ -62,6 +64,7 @@ public class CommentAction {
         if (upVotes.contains(id)) { // un-do upvote
             upVotes.remove(id);
             comment.setUpvotes(upVotes);
+            DataStore.getInstance().updateComments(comment);
             mapper.save(comment);
             return;
         }
@@ -71,6 +74,7 @@ public class CommentAction {
         }
         upVotes.add(id);
         comment.setUpvotes(upVotes);
+        DataStore.getInstance().updateComments(comment);
         mapper.save(comment);
     }
 
@@ -84,6 +88,7 @@ public class CommentAction {
         if (downVotes.contains(id)) { // un-do downvote
             downVotes.remove(id);
             comment.setDownvotes(downVotes);
+            DataStore.getInstance().updateComments(comment);
             mapper.save(comment);
             return;
         }
@@ -93,6 +98,7 @@ public class CommentAction {
         }
         downVotes.add(id);
         comment.setDownvotes(downVotes);
+        DataStore.getInstance().updateComments(comment);
         mapper.save(comment);
     }
 

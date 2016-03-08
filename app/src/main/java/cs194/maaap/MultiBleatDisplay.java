@@ -38,29 +38,13 @@ public class MultiBleatDisplay extends Activity {
         setContentView(R.layout.multibleat_display);
 
         Intent intent = getIntent();
-        Bleat[] raw_bleats = (Bleat[])intent.getSerializableExtra("myBleats");
-        String order = intent.getStringExtra("order");
+        String msg = intent.getStringExtra("title");
+        TextView tv = (TextView)findViewById(R.id.multi_title);
+        tv.setText(msg);
+        String[] myBIDs = (String[])intent.getSerializableExtra("myBIDs");
 
         ArrayList<Bleat> bleats = new ArrayList<Bleat>();
-        for (Bleat bleat : raw_bleats) bleats.add(bleat);
-
-        /*
-        if (order.equals("new")) {
-            Collections.sort(bleats, new Comparator<Bleat>() {
-                @Override
-                public int compare(Bleat lhs, Bleat rhs) {
-                    return (int) (- lhs.getTime() + rhs.getTime());
-                }
-            });
-        } else {
-            Collections.sort(bleats, new Comparator<Bleat>() {
-                @Override
-                public int compare(Bleat lhs, Bleat rhs) {
-                    return (int) (- lhs.computeNetUpvotes() + rhs.computeNetUpvotes());
-                }
-            });
-        }
-        */
+        for (String bid : myBIDs) bleats.add(DataStore.getInstance().getBleat(bid));
 
         LinearLayout bleatLayout = (LinearLayout) findViewById(R.id.bleat_scroll_layout);
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -72,8 +56,9 @@ public class MultiBleatDisplay extends Activity {
                 public void onClick(View v) {
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     Intent displayIntent;
+                    Log.d("val", "valerie!");
                     displayIntent = new Intent(MultiBleatDisplay.this, BleatDisplay.class);
-                    displayIntent.putExtra("myBleat", bleat);
+                    displayIntent.putExtra("myBID", bleat.getBID());
                     MultiBleatDisplay.this.startActivity(displayIntent);
                 }
             });

@@ -14,7 +14,11 @@ public class SaveBleat extends AsyncTask<String, Void, Void> {
     }
 
     protected Void doInBackground(String... message) {
-        bleatAction.saveBleat(message[0]);
+        if (message.length == 1) {
+            bleatAction.saveBleat(message[0]);
+        } else {
+            bleatAction.saveBleatWithPhoto(message[0], message[1]);
+        }
         return null;
     }
 }

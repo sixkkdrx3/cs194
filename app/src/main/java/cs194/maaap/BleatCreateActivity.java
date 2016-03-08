@@ -2,6 +2,7 @@ package cs194.maaap;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,8 @@ import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.UUID;
 
 public class BleatCreateActivity extends Activity {
 
@@ -80,6 +83,9 @@ public class BleatCreateActivity extends Activity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String res;
+                String id = "";
+                File file = null;
+                BleatAction bleatAction = new BleatAction(BleatCreateActivity.this, "BleatCreateActivity");
                 if(!isPhoto) {
                     EditText tv = (EditText) findViewById(R.id.msg);
                     res = tv.getText().toString();
@@ -92,15 +98,38 @@ public class BleatCreateActivity extends Activity {
                     Pair<Integer, Integer> size = MapFragment.scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), 1024, 1024);
                     Bitmap scaledBitmap = Bitmap.createScaledBitmap(fullBitmap, size.first, size.second, true);
                     Log.d("BleatCreateActivity", "scaled image size: " + scaledBitmap.getWidth() + "*" + scaledBitmap.getHeight());
+
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
                     byte[] imageBytes = stream.toByteArray();
                     res = Base64.encodeToString(imageBytes, Base64.DEFAULT);
                     Log.d("BleatCreateActivity", "res size: " + res.length());
+
+                    id = UUID.randomUUID().toString();
+                    id = id + ".jpeg";
+                    stream = new ByteArrayOutputStream();
+                    fullBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] fullImageBytes = stream.toByteArray();
+                    try {
+                        file = new File(getCacheDir(), id);
+                        file.createNewFile();
+                        FileOutputStream ostream = new FileOutputStream(file);
+                        ostream.write(fullImageBytes);
+                        ostream.flush();
+                        ostream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                BleatAction bleatAction = new BleatAction(BleatCreateActivity.this, "BleatCreateActivity");
                 SaveBleat saveBleat = new SaveBleat(bleatAction);
-                saveBleat.execute(res);
+
+                if (isPhoto) {
+                    saveBleat.execute(res, id);
+                    UploadPhoto uploadPhoto = new UploadPhoto(bleatAction);
+                    uploadPhoto.execute(file);
+                } else {
+                    saveBleat.execute(res);
+                }
                 BleatCreateActivity.this.finish();
             }
         });

@@ -6,7 +6,7 @@ import android.os.AsyncTask;
  * Created by kaidi on 2/21/16.
  */
 
-public class SaveComment extends AsyncTask<String, Void, Void> {
+public class SaveComment extends AsyncTask<String, Void, Comment> {
 
     private CommentAction commentAction;
 
@@ -14,8 +14,8 @@ public class SaveComment extends AsyncTask<String, Void, Void> {
         this.commentAction = commentAction;
     }
 
-    protected Void doInBackground(String... message) {
-        commentAction.saveComment(message[0]);
-        return null;
+    protected Comment doInBackground(String... message) {
+        Comment comment = commentAction.saveComment(message[0]);
+        return comment;
     }
 }

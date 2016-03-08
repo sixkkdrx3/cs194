@@ -52,7 +52,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private GoogleApiClient mGoogleApiClient;
     private HashMap<String, Bleat> bleatMap;
     private HashMap<String, MarkerInfo> markerInfoMap;
-    private Bleat bigBleat;
     private long lastUpdated;
     private MainActivity parentActivity;
     private int thumbnailSize = 128;
@@ -78,14 +77,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             this.forceLoc = forceLoc;
         }
 
-        public Bleat maxBleat()
-        {
+        public Bleat maxBleat() {
             Bleat maxb = bleats[0];
             for(int i = 1; i < bleats.length; i++)
-            {
-                if(bleats[i].gt(maxb))
-                    maxb = bleats[i];
-            }
+                if(bleats[i].gt(maxb)) maxb = bleats[i];
             return maxb;
         }
 
@@ -103,7 +98,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         bleatMap = new HashMap<String, Bleat>();
         markerInfoMap = new HashMap<String, MarkerInfo>();
-        bigBleat = null;
         lastUpdated = 0;
         parentActivity = (MainActivity)getActivity();
 
@@ -119,6 +113,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 parentActivity.startActivity(intent);
             }
         });
+
+        try {
+            BleatAction bleatAction = new BleatAction(parentActivity, "Main");
+            GetBleats getBleats = new GetBleats(bleatAction);
+            DataStore.getInstance().updateBleats(getBleats.execute().get());
+        } catch (Exception e) { }
         return v;
     }
 
@@ -126,16 +126,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
-        Bleat[] bleats = markerInfoMap.get(bid).bleats;
+        String[] bids = Utils.extractBIDs(markerInfoMap.get(bid).bleats);
         Intent displayIntent;
-        if(bleats.length == 1) {
+        if(bids.length == 1) {
             displayIntent = new Intent(parentActivity, BleatDisplay.class);
-            displayIntent.putExtra("myBleat", bleats[0]);
+            displayIntent.putExtra("myBID", bids[0]);
         }
         else
         {
             displayIntent = new Intent(parentActivity, MultiBleatDisplay.class);
-            displayIntent.putExtra("myBleats", bleats);
+            displayIntent.putExtra("title","Bleats located here");
+            displayIntent.putExtra("myBIDs", bids);
         }
 
         parentActivity.startActivity(displayIntent);
@@ -335,30 +336,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             } else {
                 Log.d("map", "ggwp");
             }
-
-            int bestVal = -1000000;
-            String BID = "";
-            Bleat bestBleat = null;
-            for (Bleat bleat : bleatMap.values()) {
-                LatLng pt = new LatLng(bleat.getLatitude(), bleat.getLongitude());
-                if (bleat.computeNetUpvotes() > bestVal && bounds.contains(pt)) {
-                    bestVal = bleat.computeNetUpvotes();
-                    BID = bleat.getBID();
-                    bestBleat = bleat;
-                }
-            }
-
-            /*
-            if (bestBleat != null && (bigBleat == null || BID != bigBleat.getBID())) {
-                if (bigBleat != null) {
-                    markerInfoMap.get(bigBleat.getBID()).marker.remove();
-                    addMarker(bigBleat, Constants.BLEAT_DEFAULT_SIZE);
-                }
-                markerInfoMap.get(BID).marker.remove();
-                addMarker(bestBleat, Constants.BLEAT_BIG_SIZE);
-                bigBleat = bestBleat;
-            }
-            */
         }
 
         consolidateBleats();
