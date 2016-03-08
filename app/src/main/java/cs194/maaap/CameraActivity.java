@@ -272,9 +272,10 @@ public class CameraActivity extends Activity
                 }
             }
 
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("image",outputFile);
-            setResult(Activity.RESULT_OK,returnIntent);
+            Intent intent = new Intent(CameraActivity.this, PhotoEditActivity.class);
+            intent.putExtra("image", outputFile);
+            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            CameraActivity.this.startActivity(intent);
             finish();
         }
 

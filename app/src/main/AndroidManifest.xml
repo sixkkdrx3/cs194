@@ -46,6 +46,7 @@
         <activity android:name=".MultiBleatDisplay"></activity>
         <activity android:name=".CameraActivity"></activity>
         <activity android:name=".BleatCreateActivity"></activity>
+        <activity android:name=".PhotoEditActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"

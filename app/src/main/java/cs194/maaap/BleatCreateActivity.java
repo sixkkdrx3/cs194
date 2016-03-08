@@ -29,7 +29,7 @@ import java.io.File;
 public class BleatCreateActivity extends Activity {
 
     public double[] coords;
-    private int TAKE_PHOTO = 0;
+    public static int TAKE_PHOTO = 0;
     private boolean isPhoto;
 
     @Override

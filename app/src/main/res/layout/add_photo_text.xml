@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent" >
+
+<ImageView
+    android:id="@+id/photo_editimg"
+    android:scaleType="centerCrop"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />
+
+<EditText
+    android:id="@+id/photo_edittext"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:background="#A0000000"
+    android:visibility="invisible"
+    android:textColor="#FFFFFF" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTextButton"
+        android:src="@drawable/ic_text_fields_black_24dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@android:color/transparent"
+        android:layout_marginStart="50dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/acceptPhotoButton"
+        android:src="@drawable/ic_check_black_24dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
