@@ -19,9 +19,12 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -41,24 +44,59 @@ public class BleatCreateActivity extends Activity {
         if (requestCode == TAKE_PHOTO) {
             if(resultCode == Activity.RESULT_OK){
                 File imageFile = (File) data.getSerializableExtra("image");
-                Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                final Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
 
-                View msgView = findViewById(R.id.msg);
-                ViewGroup parent = (ViewGroup) msgView.getParent();
-                int index = parent.indexOfChild(msgView);
+                final View msgView = findViewById(R.id.msg);
+                final ViewGroup parent = (ViewGroup) msgView.getParent();
+                final int textIndex = parent.indexOfChild(msgView);
                 parent.removeView(msgView);
-                ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatphoto, parent, false);
+                final View photoLayout = getLayoutInflater().inflate(R.layout.bleatphoto, parent, false);
+                final ImageView msgPhoto = (ImageView) photoLayout.findViewById(R.id.msg_photo);
                 msgPhoto.setImageBitmap(myBitmap);
-                parent.addView(msgPhoto, index);
+                parent.addView(photoLayout, textIndex);
                 isPhoto = true;
 
-                View buttonView = (FloatingActionButton) findViewById(R.id.camera_button);
-                ((ViewGroup)buttonView.getParent()).removeView(buttonView);
+                final View cameraButton = (FloatingActionButton) findViewById(R.id.camera_button);
+                final ViewGroup cameraButtonParent = (ViewGroup)cameraButton.getParent();
+                final int cameraButtonIndex = cameraButtonParent.indexOfChild(cameraButton);
+                cameraButtonParent.removeView(cameraButton);
                 /*CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) buttonView.getLayoutParams();
                 params.setAnchorId(R.id.msg_photo);
                 buttonView.setLayoutParams(params);*/
 
                 imageFile.delete();
+
+                ViewTreeObserver vto = photoLayout.getViewTreeObserver();
+                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        photoLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                        ImageButton closeImage = (ImageButton) findViewById(R.id.close_image);
+                        closeImage.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View view) {
+                                parent.removeView(photoLayout);
+                                parent.addView(msgView, textIndex);
+                                cameraButtonParent.addView(cameraButton, cameraButtonIndex);
+                                isPhoto = false;
+                            }
+                        });
+
+
+                        //align close button to top right corner of image
+                        int msgPhotoWidth = msgPhoto.getWidth();
+                        int msgPhotoHeight = msgPhoto.getHeight();
+                        Log.d("BleatCreateActivity", "sizes: " + myBitmap.getWidth() + " " + myBitmap.getHeight() + " " + msgPhotoWidth + " " + msgPhotoHeight);
+                        Pair<Integer, Integer> scaledSize = MapFragment.scalePreserveRatio(myBitmap.getWidth(), myBitmap.getHeight(), msgPhotoWidth, msgPhotoHeight);
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) closeImage.getLayoutParams();
+                        Log.d("BleatCreateActivity", "margins: " + (msgPhotoHeight - scaledSize.second) / 2 + " " + (msgPhotoWidth - scaledSize.first) / 2);
+                        params.topMargin = (msgPhotoHeight - scaledSize.second) / 2;
+                        params.rightMargin = (msgPhotoWidth - scaledSize.first) / 2;
+                        closeImage.setLayoutParams(params);
+                        closeImage.setVisibility(View.VISIBLE);
+                    }
+                });
+
             }
         }
     }
@@ -95,7 +133,7 @@ public class BleatCreateActivity extends Activity {
                     ImageView msgView = (ImageView) findViewById(R.id.msg_photo);
                     Bitmap fullBitmap = ((BitmapDrawable) msgView.getDrawable()).getBitmap();
                     Log.d("BleatCreateActivity", "image size: " + fullBitmap.getWidth() + "*" + fullBitmap.getHeight());
-                    Pair<Integer, Integer> size = MapFragment.scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), 1024, 1024);
+                    Pair<Integer, Integer> size = MapFragment.scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), 512, 512);
                     Bitmap scaledBitmap = Bitmap.createScaledBitmap(fullBitmap, size.first, size.second, true);
                     Log.d("BleatCreateActivity", "scaled image size: " + scaledBitmap.getWidth() + "*" + scaledBitmap.getHeight());
 
