@@ -3,13 +3,16 @@ package cs194.maaap;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 
@@ -89,6 +92,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    public void gracefulExit() {
+        /*final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog.setTitle("No Internet Connection");
+        alertDialog.setMessage("There is no Internet Connection now.");
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int which) {
+                        this.activity.finish();
+                    }
+                }
+
+        );
+        alertDialog.show();*/
+        getActivity().finish();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

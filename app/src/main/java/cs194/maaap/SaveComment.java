@@ -9,8 +9,10 @@ import android.os.AsyncTask;
 public class SaveComment extends AsyncTask<String, Void, Comment> {
 
     private CommentAction commentAction;
+    private BleatDisplay bleatDisplay;
 
-    public SaveComment(CommentAction commentAction) {
+    public SaveComment(CommentAction commentAction, BleatDisplay bleatDisplay) {
+        this.bleatDisplay = bleatDisplay;
         this.commentAction = commentAction;
     }
 
@@ -18,4 +20,9 @@ public class SaveComment extends AsyncTask<String, Void, Comment> {
         Comment comment = commentAction.saveComment(message[0]);
         return comment;
     }
+
+    protected void onPostExecute(Comment comment) {
+        bleatDisplay.addView(comment);
+    }
+
 }

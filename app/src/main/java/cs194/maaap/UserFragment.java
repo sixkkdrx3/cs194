@@ -46,8 +46,8 @@ public class UserFragment extends Fragment {
 
         try {
             CommentAction commentAction = new CommentAction(parentActivity, Constants.DEFAULT_BLAH);
-            GetComments getComments = new GetComments(commentAction);
-            DataStore.getInstance().updateComments(getComments.execute().get());
+            GetComments getComments = new GetComments(commentAction, null);
+            getComments.execute();
         } catch (Exception e) { }
 
     /*    List<Bleat> ownBleats = DataStore.getInstance().getOwnBleats(id);

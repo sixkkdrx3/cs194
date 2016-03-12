@@ -1,6 +1,7 @@
 package cs194.maaap;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.cognito.exceptions.NetworkException;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Region;
@@ -12,6 +13,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 
 import java.io.File;
@@ -19,7 +21,10 @@ import java.util.Calendar;
 import java.util.UUID;
 import java.util.List;
 import java.util.HashSet;
+
+import android.content.DialogInterface;
 import android.provider.Settings.Secure;
+import android.util.Log;
 
 /**
  * Created by kaidi on 1/24/16.
@@ -51,36 +56,48 @@ public class BleatAction {
         s3.setRegion(Region.getRegion(Regions.US_EAST_1));
         transferUtility = new TransferUtility(s3, activity.getApplicationContext());
     }
+    public void handleError() {
+        Log.d("error", "error!!");
+        ((MainActivity)activity).handler.sendEmptyMessage(Constants.CONNECTION_ERROR);
+    }
 
     public void saveBleat(String message) {
-        String bid = UUID.randomUUID().toString();
-        String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
-                Secure.ANDROID_ID);
+        try {
+            String bid = UUID.randomUUID().toString();
+            String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
+                    Secure.ANDROID_ID);
 
-        Bleat bleat = new Bleat();
-        bleat.setMessage(message);
-        bleat.setBID(bid);
-        bleat.setCoordinates(coords[0], coords[1]);
-        bleat.setTime(Calendar.getInstance().getTimeInMillis());
-        bleat.setAuthorID(id);
-        DataStore.getInstance().updateBleats(bleat);
-        mapper.save(bleat);
+            Bleat bleat = new Bleat();
+            bleat.setMessage(message);
+            bleat.setBID(bid);
+            bleat.setCoordinates(coords[0], coords[1]);
+            bleat.setTime(Calendar.getInstance().getTimeInMillis());
+            bleat.setAuthorID(id);
+            DataStore.getInstance().updateBleats(bleat);
+            mapper.save(bleat);
+        } catch (Exception e) {
+            handleError();
+        }
     }
 
     public void saveBleatWithPhoto(String message, String photoID) {
-        String bid = UUID.randomUUID().toString();
-        String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
-                Secure.ANDROID_ID);
+        try {
+            String bid = UUID.randomUUID().toString();
+            String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
+                    Secure.ANDROID_ID);
 
-        Bleat bleat = new Bleat();
-        bleat.setMessage(message);
-        bleat.setBID(bid);
-        bleat.setCoordinates(coords[0], coords[1]);
-        bleat.setTime(Calendar.getInstance().getTimeInMillis());
-        bleat.setAuthorID(id);
-        bleat.setPhotoID(photoID);
-        DataStore.getInstance().updateBleats(bleat);
-        mapper.save(bleat);
+            Bleat bleat = new Bleat();
+            bleat.setMessage(message);
+            bleat.setBID(bid);
+            bleat.setCoordinates(coords[0], coords[1]);
+            bleat.setTime(Calendar.getInstance().getTimeInMillis());
+            bleat.setAuthorID(id);
+            bleat.setPhotoID(photoID);
+            DataStore.getInstance().updateBleats(bleat);
+            mapper.save(bleat);
+        } catch (Exception e) {
+            handleError();
+        }
     }
 
 
@@ -134,8 +151,13 @@ public class BleatAction {
     }
 
     public List<Bleat> getBleats() {
-        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-        PaginatedScanList<Bleat> result = mapper.scan(Bleat.class, scanExpression);
+        PaginatedScanList<Bleat> result = null;
+        try {
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+            result = mapper.scan(Bleat.class, scanExpression);
+        } catch (Exception e) {
+            handleError();
+        }
         return result;
     }
 

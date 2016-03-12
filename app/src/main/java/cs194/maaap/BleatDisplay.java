@@ -45,7 +45,7 @@ public class BleatDisplay extends Activity {
         String myBID = (String)i.getSerializableExtra("myBID");
         bleat = DataStore.getInstance().getBleat(myBID);
         DataStore.getInstance().addSeenBleat(myBID);
-        
+
         TextView message = (TextView)findViewById(R.id.bleat_content);
         if(bleat.getMessage().length()<200) {
             message.setText(bleat.getMessage());
@@ -109,14 +109,10 @@ public class BleatDisplay extends Activity {
         scroll = (LinearLayout)findViewById(R.id.comment_layout);
         final CommentAction commentAction = new CommentAction(this, bleat.getBID());
 
-        GetComments getComments = new GetComments(commentAction);
-        List<Comment> allComments = null;
-
+        GetComments getComments = new GetComments(commentAction, this);
         try {
-            allComments = getComments.execute().get();
+            getComments.execute();
         } catch (Exception e) { }
-        int cnt = 0;
-        for (final Comment comment : allComments) addView(comment);
 
         final EditText tv = (EditText)findViewById(R.id.new_comment);
 //        tv.setOnTouchListener(new View.OnTouchListener() {
@@ -153,19 +149,17 @@ public class BleatDisplay extends Activity {
             public void onClick(View v) {
                 final String res = tv.getText().toString();
                 if (res.length() > 0) {
-                    SaveComment saveComment = new SaveComment(commentAction);
-                    Comment comment = null;
+                    SaveComment saveComment = new SaveComment(commentAction, BleatDisplay.this);
                     try {
-                        comment = saveComment.execute(res).get();
+                        saveComment.execute(res);
                     } catch (Exception e) { }
-                    addView(comment);
                 }
                 tv.setText("");
             }
         });
     }
 
-    private void addView(final Comment comment) {
+    public void addView(final Comment comment) {
         int cnt = scroll.getChildCount();
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final CommentAction commentAction = new CommentAction(this, bleat.getBID());
@@ -188,28 +182,22 @@ public class BleatDisplay extends Activity {
 
         commentUp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                UpvoteComment upvoteComment = new UpvoteComment(commentAction);
+                UpvoteComment upvoteComment = new UpvoteComment(commentAction, commentNetVotes);
                 try {
-                    upvoteComment.execute(comment).get();
+                    upvoteComment.execute(comment);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                ;
-                int num = comment.computeNetUpvotes();
-                commentNetVotes.setText(Integer.toString(num));
-
             }
         });
         commentDown.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DownvoteComment downvoteComment = new DownvoteComment(commentAction);
+                DownvoteComment downvoteComment = new DownvoteComment(commentAction, commentNetVotes);
                 try {
-                    downvoteComment.execute(comment).get();
+                    downvoteComment.execute(comment);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                int num = comment.computeNetUpvotes();
-                commentNetVotes.setText(Integer.toString(num));
             }
         });
     }

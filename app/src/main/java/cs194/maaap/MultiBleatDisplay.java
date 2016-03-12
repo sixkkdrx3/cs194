@@ -85,7 +85,7 @@ public class MultiBleatDisplay extends Activity {
                 public void onClick(View v) {
                     DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction, number);
                     try {
-                        downvoteBleat.execute(bleat).get();
+                        downvoteBleat.execute(bleat);
                     } catch (Exception e) {
                         Log.d("map", "ggwp");
                     }
