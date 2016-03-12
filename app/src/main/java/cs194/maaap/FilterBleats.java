@@ -46,7 +46,7 @@ public class FilterBleats extends ContextWrapper {
 
         List<Bleat> filterResult = new ArrayList<Bleat>();
         for (Bleat bleat : result) {
-            Log.d("map", bleat.getTime() + " " + bleat.getLatitude() + " " + bleat.getLongitude() + " " + bleat.getMessage());
+            //Log.d("map", bleat.getTime() + " " + bleat.getLatitude() + " " + bleat.getLongitude() + " " + bleat.getMessage());
             LatLng pos = new LatLng(bleat.getLatitude(), bleat.getLongitude());
             if (bleat.getTime() > minTime && bounds.contains(pos)) {
                 filterResult.add(bleat);

@@ -44,6 +44,7 @@ public class BleatDisplay extends Activity {
 
         String myBID = (String)i.getSerializableExtra("myBID");
         bleat = DataStore.getInstance().getBleat(myBID);
+        DataStore.getInstance().addSeenBleat(myBID);
 
         TextView message = (TextView)findViewById(R.id.bleat_content);
         if(bleat.getMessage().length()<200) {

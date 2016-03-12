@@ -123,7 +123,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public boolean onMarkerClick(Marker marker) {
-        Log.d("map", "marker clicked " + marker.getSnippet());
+        //Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
         String[] bids = Utils.extractBIDs(markerInfoMap.get(bid).bleats);
@@ -324,13 +324,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
             if (result != null) {
                 for (Bleat bleat : result) {
-                    Log.d("mappp", bleat.getMessage());
+                    //Log.d("mappp", bleat.getMessage());
                     if (!bleatMap.containsKey(bleat.getBID())) {
                         addMarker(bleat, Constants.BLEAT_DEFAULT_SIZE, null);
                     }
                     bleatMap.put(bleat.getBID(), bleat);
-                    if(bleat.getBID() == "e5c915c3-060e-4c26-a225-d809a7922988"|| bleat.getBID() == "6742a95c-ee06-4628-9aae-0e3cc69b30b0")
-                        Log.d("map", "putting bleat " + bleat.getBID());
                 }
                 Log.d("map", "done");
             } else {
@@ -470,8 +468,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                                 }
                             } else if (mi.isConsolidated) //merge them
                             {
-                                Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
-                                Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
+                                //Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
+                                //Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
                                 hasChanged = true;
                                 //mi.marker.remove();
                                 //mj.marker.remove();
@@ -492,7 +490,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             } while (hasChanged);
 
             Map.Entry<String, MarkerInfo>[] entries = getMarkerInfoEntries();
-            Log.d("consolidate", "entries size: " + entries.length);
+            //Log.d("consolidate", "entries size: " + entries.length);
             for (int i = 0; i < entries.length; i++) {
                 MarkerInfo mi = entries[i].getValue();
                 //if (mi.isConsolidated) {
@@ -503,14 +501,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                             continue;
                         MarkerInfo mj = entries[j].getValue();
                         if (isOverlapping(mi, mj)) {
-                            Log.d("consolidate", i + " " + j);
+                            //Log.d("consolidate", i + " " + j);
                             hasChangedOuter = true;
                             overlapping.add(j);
                         }
                     }
                     if (overlapping.size() > 1 || (mi.forceLoc && overlapping.size() > 0)) {
                         //Log.d("consolidate", "before consolidating " + i + ", size " + markerInfoMap.size());
-                        Log.d("consolidate", "before consolidating " + mi.maxBleat().getMessage());
+                        //Log.d("consolidate", "before consolidating " + mi.maxBleat().getMessage());
                         ArrayList<Bleat> bleatList = new ArrayList<Bleat>();
                         //Log.d("consolidate", "osize "+overlapping.size());
                         int kstart = mi.forceLoc ? 0 : 1;
@@ -518,7 +516,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         for (int k = kstart; k < overlapping.size(); k++) {
                             int j = overlapping.get(k);
                             MarkerInfo mj = entries[j].getValue();
-                            Log.d("consolidate", "during consolidating " + mj.maxBleat().getMessage());
+                            //Log.d("consolidate", "during consolidating " + mj.maxBleat().getMessage());
                             bleatList.addAll(Arrays.asList(mj.bleats));
                             if(k > kstart)
                                 entries[j] = null;
@@ -537,7 +535,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         LatLng newLoc = separate(mj, mi);
 
 
-                        Log.d("consolidate", "moving \"" + mi.maxBleat().getMessage() + "\" to side of \"" + mj.maxBleat().getMessage() + "\"");
+                        //Log.d("consolidate", "moving \"" + mi.maxBleat().getMessage() + "\" to side of \"" + mj.maxBleat().getMessage() + "\"");
 
                         //mi.marker.remove();
                         markerInfoMap.remove(mi.bleats[0].getBID());

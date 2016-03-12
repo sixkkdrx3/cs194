@@ -14,6 +14,7 @@ import java.util.List;
 public class DataStore {
     private HashMap<String, Bleat> downloadedBleats;
     private HashMap<String, Comment> downloadedComments;
+    private HashSet<String> seenBleats;
 
     public long bleatLastUpdated;
     public long commentLastUpdated;
@@ -21,11 +22,13 @@ public class DataStore {
     public DataStore() {
         downloadedBleats = new HashMap<String, Bleat>();
         downloadedComments = new HashMap<String, Comment>();
+        seenBleats = new HashSet<String>();
         bleatLastUpdated = commentLastUpdated = 0;
     }
 
     public HashMap<String, Bleat> getDownloadedBleats() {return downloadedBleats;}
     public HashMap<String, Comment> getDownloadedComments() {return downloadedComments;}
+    public HashSet<String> getSeenBleats() {return seenBleats;}
 
     public Bleat getBleat(String BID) {return downloadedBleats.get(BID);}
     public Bleat[] getBleats(String[] BIDs) {
@@ -92,6 +95,14 @@ public class DataStore {
             }
         }
         return result;
+    }
+
+    public void addSeenBleat(String bid) {
+        seenBleats.add(bid);
+    }
+
+    public Boolean hasSeenBleat(String bid) {
+        return seenBleats.contains(bid);
     }
 
 
