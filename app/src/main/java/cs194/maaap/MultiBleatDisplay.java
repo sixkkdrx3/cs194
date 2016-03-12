@@ -73,28 +73,22 @@ public class MultiBleatDisplay extends Activity {
 
             up.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
+                    UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction, number);
                     try {
-                        upvoteBleat.execute(bleat).get();
+                        upvoteBleat.execute(bleat);
                     } catch (Exception e) {
                         Log.d("map", "ggwp");
                     }
-                    ;
-                    int num = bleat.computeNetUpvotes();
-                    number.setText(Integer.toString(num));
-
                 }
             });
             down.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction);
+                    DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction, number);
                     try {
                         downvoteBleat.execute(bleat).get();
                     } catch (Exception e) {
                         Log.d("map", "ggwp");
                     }
-                    int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
-                    number.setText(Integer.toString(num));
                 }
             });
 

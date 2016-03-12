@@ -41,7 +41,7 @@ public class UserFragment extends Fragment {
         try {
             BleatAction bleatAction = new BleatAction(parentActivity, "Multi");
             GetBleats getBleats = new GetBleats(bleatAction);
-            DataStore.getInstance().updateBleats(getBleats.execute().get());
+            getBleats.execute();
         } catch (Exception e) { }
 
         try {

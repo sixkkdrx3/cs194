@@ -45,7 +45,7 @@ public class BleatDisplay extends Activity {
         String myBID = (String)i.getSerializableExtra("myBID");
         bleat = DataStore.getInstance().getBleat(myBID);
         DataStore.getInstance().addSeenBleat(myBID);
-
+        
         TextView message = (TextView)findViewById(R.id.bleat_content);
         if(bleat.getMessage().length()<200) {
             message.setText(bleat.getMessage());
@@ -68,12 +68,10 @@ public class BleatDisplay extends Activity {
                 public void onClick(View v) {
                     Log.d("click", "clicked");
                     DownloadPhoto downloadPhoto = new DownloadPhoto(bleatAction);
-                    File file = null;
                     try {
-                        file = downloadPhoto.execute(bleat.getPhotoID()).get();
+                        downloadPhoto.execute(bleat.getPhotoID());
                     } catch (Exception e) { }
                     /* TODO: display file */
-                    Log.d("download", file.getName());
                 }
             });
             parent.addView(msgPhoto, index);
@@ -89,28 +87,22 @@ public class BleatDisplay extends Activity {
 
         up.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
+                UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction, number);
                 try {
-                    upvoteBleat.execute(bleat).get();
+                    upvoteBleat.execute(bleat);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                ;
-                int num = bleat.computeNetUpvotes();
-                number.setText(Integer.toString(num));
-
             }
         });
         down.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction);
+                DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction, number);
                 try {
-                    downvoteBleat.execute(bleat).get();
+                    downvoteBleat.execute(bleat);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
-                number.setText(Integer.toString(num));
             }
         });
 

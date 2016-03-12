@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,28 +18,11 @@ import java.util.Map;
 /**
  * Created by kaidi on 1/31/16.
  */
-public class FilterBleats extends ContextWrapper {
-    private BleatAction bleatAction;
+public class FilterBleats {
     private List<Bleat> result = null;
 
-    public FilterBleats(Context base) {
-        super(base);
-        BleatAction bleatAction = new BleatAction((MainActivity)base, "MapsActivity");
-
-        //Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-        //double a = bounds.northeast.latitude;
-        //eav.put(":latMin", new AttributeValue().withN());
-        //eav.put(":latMax", new AttributeValue().withN(bounds.southwest.latitude));
-
-        //DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-//                .withFilterExpression();
-        GetBleats getBleats = new GetBleats(bleatAction);
-
-        try {
-            result = getBleats.execute().get();
-        } catch (Exception e) {
-            Log.d("map", "ggwp");
-        }
+    public FilterBleats(List<Bleat> bleats) {
+        result = bleats;
     }
 
     public List<Bleat> filter(long minTime, LatLngBounds bounds) {

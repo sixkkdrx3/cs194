@@ -117,7 +117,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         try {
             BleatAction bleatAction = new BleatAction(parentActivity, "Main");
             GetBleats getBleats = new GetBleats(bleatAction);
-            DataStore.getInstance().updateBleats(getBleats.execute().get());
+            getBleats.execute();
         } catch (Exception e) { }
         return v;
     }
@@ -149,6 +149,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         return true;
     }
 
+    public void drawBleatsOnMap() {
+        BleatAction bleatAction = new BleatAction(parentActivity, "main");
+        DrawBleats drawBleats = new DrawBleats(bleatAction, this);
+        drawBleats.execute();
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("map", "onMapReady called");
@@ -158,7 +164,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         Log.d("map", ret[0] + " " + ret[1]);
         LatLng currentLocation = new LatLng(ret[0], ret[1]);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 15.0));
-        drawBleats(true);
+        drawBleatsOnMap();
         mMap.setOnMarkerClickListener(this);
         mMap.setOnCameraChangeListener(this);
         mMap.setInfoWindowAdapter(new FakeWindowAdapter(parentActivity));
@@ -308,32 +314,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         return markerInfo;
     }
 
-    public void drawBleats(boolean ... forced) {
+    public void drawBleats(List<Bleat> bleats) {
         long curTime = Calendar.getInstance().getTimeInMillis();
-        if (curTime - lastUpdated > Constants.WAIT_TIME || (forced.length > 0 && forced[0])) {  // 2 minutes
-            LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-            assert (mMap != null);
-            assert(((MapFragment)(parentActivity.adapter.getItem(0))).mMap != null);
-            FilterBleats filterBleats = new FilterBleats(parentActivity);
-            List<Bleat> result = filterBleats.filter(curTime - Constants.EXPIRE_DURATION, bounds);
-            bleatMap.clear();
-            for(MarkerInfo markerInfo : markerInfoMap.values()) {
-                markerInfo.marker.remove();
-            }
-            markerInfoMap.clear();
+        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 
-            if (result != null) {
-                for (Bleat bleat : result) {
-                    //Log.d("mappp", bleat.getMessage());
-                    if (!bleatMap.containsKey(bleat.getBID())) {
-                        addMarker(bleat, Constants.BLEAT_DEFAULT_SIZE, null);
-                    }
-                    bleatMap.put(bleat.getBID(), bleat);
+        FilterBleats filterBleats = new FilterBleats(bleats);
+        List<Bleat> result = filterBleats.filter(curTime - Constants.EXPIRE_DURATION, bounds);
+        bleatMap.clear();
+        for(MarkerInfo markerInfo : markerInfoMap.values()) {
+            markerInfo.marker.remove();
+        }
+        markerInfoMap.clear();
+
+        if (result != null) {
+            for (Bleat bleat : result) {
+                //Log.d("mappp", bleat.getMessage());
+                if (!bleatMap.containsKey(bleat.getBID())) {
+                    addMarker(bleat, Constants.BLEAT_DEFAULT_SIZE, null);
                 }
-                Log.d("map", "done");
-            } else {
-                Log.d("map", "ggwp");
+                bleatMap.put(bleat.getBID(), bleat);
             }
+            Log.d("map", "done");
+        } else {
+                Log.d("map", "ggwp");
         }
 
         consolidateBleats();
@@ -589,7 +592,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     public void onCameraChange(CameraPosition change) {
         Log.d("map", "cameraChanged");
-        drawBleats(true);
+        drawBleatsOnMap();
     }
 
     @Override
