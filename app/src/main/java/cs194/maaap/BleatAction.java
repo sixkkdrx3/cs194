@@ -149,7 +149,8 @@ public class BleatAction {
     }
 
     public File downloadPhoto(String id) {
-        File file = null;
+        String filename = id;
+        File file = new File(activity.getCacheDir(), filename);
         TransferObserver observer = transferUtility.download(
                 "cs194",
                 id,

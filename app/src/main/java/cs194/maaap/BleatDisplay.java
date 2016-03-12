@@ -72,6 +72,7 @@ public class BleatDisplay extends Activity {
                         file = downloadPhoto.execute(bleat.getPhotoID()).get();
                     } catch (Exception e) { }
                     /* TODO: display file */
+                    Log.d("download", file.getName());
                 }
             });
             parent.addView(msgPhoto, index);
