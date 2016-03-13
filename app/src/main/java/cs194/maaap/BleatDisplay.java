@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -157,9 +159,9 @@ public class BleatDisplay extends Activity {
                 }
                 tv.setText("");
                 InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                in.hideSoftInputFromWindow(tv.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-//                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                inputManager.hideSoftInputFromWindow(tv.getWindowToken(), 0);
+                in.hideSoftInputFromWindow(tv.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                Toast.makeText(BleatDisplay.this, "Comment successfully!",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

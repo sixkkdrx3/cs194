@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -120,6 +121,8 @@ public class BleatCreateActivity extends Activity {
         final TextView sendButton = (TextView) findViewById(R.id.bleat_send);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Toast.makeText(BleatCreateActivity.this, "Bleat successful!",
+                        Toast.LENGTH_LONG).show();
                 String res;
                 String id = "";
                 File file = null;
