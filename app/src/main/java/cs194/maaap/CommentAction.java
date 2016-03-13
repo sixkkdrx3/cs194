@@ -55,7 +55,7 @@ public class CommentAction {
         return comment;
     }
 
-    public void upvoteComment(Comment comment) {
+    public boolean upvoteComment(Comment comment) {
         String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
@@ -67,7 +67,7 @@ public class CommentAction {
             comment.setUpvotes(upVotes);
             DataStore.getInstance().updateComments(comment);
             mapper.save(comment);
-            return;
+            return true;
         }
         if (downVotes.contains(id)) {
             downVotes.remove(id);
@@ -77,9 +77,10 @@ public class CommentAction {
         comment.setUpvotes(upVotes);
         DataStore.getInstance().updateComments(comment);
         mapper.save(comment);
+        return false;
     }
 
-    public void downvoteComment(Comment comment) {
+    public boolean downvoteComment(Comment comment) {
         String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
@@ -91,7 +92,7 @@ public class CommentAction {
             comment.setDownvotes(downVotes);
             DataStore.getInstance().updateComments(comment);
             mapper.save(comment);
-            return;
+            return true;
         }
         if (upVotes.contains(id)) {
             upVotes.remove(id);
@@ -101,17 +102,18 @@ public class CommentAction {
         comment.setDownvotes(downVotes);
         DataStore.getInstance().updateComments(comment);
         mapper.save(comment);
+        return false;
     }
 
     public List<Comment> getComments() {
+        PaginatedScanList<Comment> result = null;
         try {
             DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-            PaginatedScanList<Comment> result = mapper.scan(Comment.class, scanExpression);
-            return result;
+            result = mapper.scan(Comment.class, scanExpression);
         } catch (Throwable t) {
-            Log.d("throw", "getCommentsError");
-            return null;
+            Log.d("error", "ERROR IN COMMENT");
         }
+        return result;
     }
 }
 
