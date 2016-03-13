@@ -2,6 +2,7 @@ package cs194.maaap;
 
 import android.app.Activity;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -54,7 +55,7 @@ public class CommentAction {
         return comment;
     }
 
-    public void upvoteComment(Comment comment) {
+    public boolean upvoteComment(Comment comment) {
         String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
@@ -66,7 +67,7 @@ public class CommentAction {
             comment.setUpvotes(upVotes);
             DataStore.getInstance().updateComments(comment);
             mapper.save(comment);
-            return;
+            return true;
         }
         if (downVotes.contains(id)) {
             downVotes.remove(id);
@@ -76,9 +77,10 @@ public class CommentAction {
         comment.setUpvotes(upVotes);
         DataStore.getInstance().updateComments(comment);
         mapper.save(comment);
+        return false;
     }
 
-    public void downvoteComment(Comment comment) {
+    public boolean downvoteComment(Comment comment) {
         String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
@@ -90,7 +92,7 @@ public class CommentAction {
             comment.setDownvotes(downVotes);
             DataStore.getInstance().updateComments(comment);
             mapper.save(comment);
-            return;
+            return true;
         }
         if (upVotes.contains(id)) {
             upVotes.remove(id);
@@ -100,11 +102,17 @@ public class CommentAction {
         comment.setDownvotes(downVotes);
         DataStore.getInstance().updateComments(comment);
         mapper.save(comment);
+        return false;
     }
 
     public List<Comment> getComments() {
-        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-        PaginatedScanList<Comment> result = mapper.scan(Comment.class, scanExpression);
+        PaginatedScanList<Comment> result = null;
+        try {
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+            result = mapper.scan(Comment.class, scanExpression);
+        } catch (Throwable t) {
+            Log.d("error", "ERROR IN COMMENT");
+        }
         return result;
     }
 }

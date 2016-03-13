@@ -182,7 +182,7 @@ public class BleatDisplay extends Activity {
 
         commentUp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                UpvoteComment upvoteComment = new UpvoteComment(commentAction, commentNetVotes);
+                UpvoteComment upvoteComment = new UpvoteComment(commentAction, commentNetVotes, commentUp, commentDown);
                 try {
                     upvoteComment.execute(comment);
                 } catch (Exception e) {
@@ -192,7 +192,7 @@ public class BleatDisplay extends Activity {
         });
         commentDown.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DownvoteComment downvoteComment = new DownvoteComment(commentAction, commentNetVotes);
+                DownvoteComment downvoteComment = new DownvoteComment(commentAction, commentNetVotes, commentUp, commentDown);
                 try {
                     downvoteComment.execute(comment);
                 } catch (Exception e) {
