@@ -102,7 +102,7 @@ public class BleatAction {
 
 
 
-    public void upvoteBleat(Bleat bleat) {
+    public boolean upvoteBleat(Bleat bleat) {
         String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Secure.ANDROID_ID);
 
@@ -114,7 +114,7 @@ public class BleatAction {
             bleat.setUpvotes(upVotes);
             DataStore.getInstance().updateBleats(bleat);
             mapper.save(bleat);
-            return;
+            return true;
         }
         if (downVotes.contains(id)) {
             downVotes.remove(id);
@@ -124,9 +124,10 @@ public class BleatAction {
         bleat.setUpvotes(upVotes);
         DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
+        return false;
     }
 
-    public void downvoteBleat(Bleat bleat) {
+    public boolean downvoteBleat(Bleat bleat) {
         String id = Secure.getString(activity.getApplicationContext().getContentResolver(),
                 Secure.ANDROID_ID);
         
@@ -138,7 +139,7 @@ public class BleatAction {
             bleat.setDownvotes(downVotes);
             DataStore.getInstance().updateBleats(bleat);
             mapper.save(bleat);
-            return;
+            return true;
         }
         if (upVotes.contains(id)) {
             upVotes.remove(id);
@@ -148,6 +149,7 @@ public class BleatAction {
         bleat.setDownvotes(downVotes);
         DataStore.getInstance().updateBleats(bleat);
         mapper.save(bleat);
+        return false;
     }
 
     public List<Bleat> getBleats() {
