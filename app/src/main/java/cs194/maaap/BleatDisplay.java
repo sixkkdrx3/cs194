@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -123,7 +124,7 @@ public class BleatDisplay extends Activity {
 //                return false;
 //            }
 //        });
-
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Button reportBtn = (Button) findViewById(R.id.report_button);
         reportBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -155,6 +156,10 @@ public class BleatDisplay extends Activity {
                     } catch (Exception e) { }
                 }
                 tv.setText("");
+                InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(tv.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+//                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                inputManager.hideSoftInputFromWindow(tv.getWindowToken(), 0);
             }
         });
     }
