@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,12 +21,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,6 +47,7 @@ public class BleatDisplay extends Activity {
 
         String myBID = (String)i.getSerializableExtra("myBID");
         bleat = DataStore.getInstance().getBleat(myBID);
+        DataStore.getInstance().addSeenBleat(myBID);
 
         TextView message = (TextView)findViewById(R.id.bleat_content);
         if(bleat.getMessage().length()<200) {
@@ -67,9 +71,8 @@ public class BleatDisplay extends Activity {
                 public void onClick(View v) {
                     Log.d("click", "clicked");
                     DownloadPhoto downloadPhoto = new DownloadPhoto(bleatAction);
-                    File file = null;
                     try {
-                        file = downloadPhoto.execute(bleat.getPhotoID()).get();
+                        downloadPhoto.execute(bleat.getPhotoID());
                     } catch (Exception e) { }
                     /* TODO: display file */
                 }
@@ -87,42 +90,32 @@ public class BleatDisplay extends Activity {
 
         up.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction);
+                UpvoteBleat upvoteBleat = new UpvoteBleat(bleatAction, number, up, down);
                 try {
-                    upvoteBleat.execute(bleat).get();
+                    upvoteBleat.execute(bleat);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                ;
-                int num = bleat.computeNetUpvotes();
-                number.setText(Integer.toString(num));
-
             }
         });
         down.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction);
+                DownvoteBleat downvoteBleat = new DownvoteBleat(bleatAction, number, up, down);
                 try {
-                    downvoteBleat.execute(bleat).get();
+                    downvoteBleat.execute(bleat);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
-                number.setText(Integer.toString(num));
             }
         });
 
         scroll = (LinearLayout)findViewById(R.id.comment_layout);
         final CommentAction commentAction = new CommentAction(this, bleat.getBID());
 
-        GetComments getComments = new GetComments(commentAction);
-        List<Comment> allComments = null;
-
+        GetComments getComments = new GetComments(commentAction, this);
         try {
-            allComments = getComments.execute().get();
+            getComments.execute();
         } catch (Exception e) { }
-        int cnt = 0;
-        for (final Comment comment : allComments) addView(comment);
 
         final EditText tv = (EditText)findViewById(R.id.new_comment);
 //        tv.setOnTouchListener(new View.OnTouchListener() {
@@ -133,7 +126,7 @@ public class BleatDisplay extends Activity {
 //                return false;
 //            }
 //        });
-
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Button reportBtn = (Button) findViewById(R.id.report_button);
         reportBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -159,19 +152,21 @@ public class BleatDisplay extends Activity {
             public void onClick(View v) {
                 final String res = tv.getText().toString();
                 if (res.length() > 0) {
-                    SaveComment saveComment = new SaveComment(commentAction);
-                    Comment comment = null;
+                    SaveComment saveComment = new SaveComment(commentAction, BleatDisplay.this);
                     try {
-                        comment = saveComment.execute(res).get();
+                        saveComment.execute(res);
                     } catch (Exception e) { }
-                    addView(comment);
                 }
                 tv.setText("");
+                InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(tv.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                Toast.makeText(BleatDisplay.this, "Comment successfully!",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private void addView(final Comment comment) {
+    public void addView(final Comment comment) {
         int cnt = scroll.getChildCount();
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final CommentAction commentAction = new CommentAction(this, bleat.getBID());
@@ -194,28 +189,22 @@ public class BleatDisplay extends Activity {
 
         commentUp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                UpvoteComment upvoteComment = new UpvoteComment(commentAction);
+                UpvoteComment upvoteComment = new UpvoteComment(commentAction, commentNetVotes, commentUp, commentDown);
                 try {
-                    upvoteComment.execute(comment).get();
+                    upvoteComment.execute(comment);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                ;
-                int num = comment.computeNetUpvotes();
-                commentNetVotes.setText(Integer.toString(num));
-
             }
         });
         commentDown.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DownvoteComment downvoteComment = new DownvoteComment(commentAction);
+                DownvoteComment downvoteComment = new DownvoteComment(commentAction, commentNetVotes, commentUp, commentDown);
                 try {
-                    downvoteComment.execute(comment).get();
+                    downvoteComment.execute(comment);
                 } catch (Exception e) {
                     Log.d("map", "ggwp");
                 }
-                int num = comment.computeNetUpvotes();
-                commentNetVotes.setText(Integer.toString(num));
             }
         });
     }

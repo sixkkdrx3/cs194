@@ -9,4 +9,5 @@ public class Constants {
     static int BLEAT_DEFAULT_SIZE = 12;
     static int BLEAT_BIG_SIZE = 20;
     static String DEFAULT_BLAH = "ggwp";
+    static int CONNECTION_ERROR = 0;
 }

@@ -3,13 +3,16 @@ package cs194.maaap;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 
@@ -89,6 +92,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    public void gracefulExit() {
+        /*final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog.setTitle("No Internet Connection");
+        alertDialog.setMessage("There is no Internet Connection now.");
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int which) {
+                        this.activity.finish();
+                    }
+                }
+
+        );
+        alertDialog.show();*/
+        getActivity().finish();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,13 +135,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         try {
             BleatAction bleatAction = new BleatAction(parentActivity, "Main");
             GetBleats getBleats = new GetBleats(bleatAction);
-            DataStore.getInstance().updateBleats(getBleats.execute().get());
+            getBleats.execute();
         } catch (Exception e) { }
         return v;
     }
 
     public boolean onMarkerClick(Marker marker) {
-        Log.d("map", "marker clicked " + marker.getSnippet());
+        //Log.d("map", "marker clicked " + marker.getSnippet());
         FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
         String bid = marker.getSnippet();
         String[] bids = Utils.extractBIDs(markerInfoMap.get(bid).bleats);
@@ -149,6 +167,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         return true;
     }
 
+    public void drawBleatsOnMap() {
+        BleatAction bleatAction = new BleatAction(parentActivity, "main");
+        DrawBleats drawBleats = new DrawBleats(bleatAction, this);
+        drawBleats.execute();
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("map", "onMapReady called");
@@ -158,7 +182,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         Log.d("map", ret[0] + " " + ret[1]);
         LatLng currentLocation = new LatLng(ret[0], ret[1]);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 15.0));
-        drawBleats(true);
+        drawBleatsOnMap();
         mMap.setOnMarkerClickListener(this);
         mMap.setOnCameraChangeListener(this);
         mMap.setInfoWindowAdapter(new FakeWindowAdapter(parentActivity));
@@ -308,34 +332,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         return markerInfo;
     }
 
-    public void drawBleats(boolean ... forced) {
+    public void drawBleats(List<Bleat> bleats) {
         long curTime = Calendar.getInstance().getTimeInMillis();
-        if (curTime - lastUpdated > Constants.WAIT_TIME || (forced.length > 0 && forced[0])) {  // 2 minutes
-            LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-            assert (mMap != null);
-            assert(((MapFragment)(parentActivity.adapter.getItem(0))).mMap != null);
-            FilterBleats filterBleats = new FilterBleats(parentActivity);
-            List<Bleat> result = filterBleats.filter(curTime - Constants.EXPIRE_DURATION, bounds);
-            bleatMap.clear();
-            for(MarkerInfo markerInfo : markerInfoMap.values()) {
-                markerInfo.marker.remove();
-            }
-            markerInfoMap.clear();
+        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 
-            if (result != null) {
-                for (Bleat bleat : result) {
-                    Log.d("mappp", bleat.getMessage());
-                    if (!bleatMap.containsKey(bleat.getBID())) {
-                        addMarker(bleat, Constants.BLEAT_DEFAULT_SIZE, null);
-                    }
-                    bleatMap.put(bleat.getBID(), bleat);
-                    if(bleat.getBID() == "e5c915c3-060e-4c26-a225-d809a7922988"|| bleat.getBID() == "6742a95c-ee06-4628-9aae-0e3cc69b30b0")
-                        Log.d("map", "putting bleat " + bleat.getBID());
+        FilterBleats filterBleats = new FilterBleats(bleats);
+        List<Bleat> result = filterBleats.filter(curTime - Constants.EXPIRE_DURATION, bounds);
+        bleatMap.clear();
+        for(MarkerInfo markerInfo : markerInfoMap.values()) {
+            markerInfo.marker.remove();
+        }
+        markerInfoMap.clear();
+
+        if (result != null) {
+            for (Bleat bleat : result) {
+                //Log.d("mappp", bleat.getMessage());
+                if (!bleatMap.containsKey(bleat.getBID())) {
+                    addMarker(bleat, Constants.BLEAT_DEFAULT_SIZE, null);
                 }
-                Log.d("map", "done");
-            } else {
-                Log.d("map", "ggwp");
+                bleatMap.put(bleat.getBID(), bleat);
             }
+            Log.d("map", "done");
+        } else {
+                Log.d("map", "ggwp");
         }
 
         consolidateBleats();
@@ -470,8 +489,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                                 }
                             } else if (mi.isConsolidated) //merge them
                             {
-                                Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
-                                Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
+                                //Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
+                                //Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
                                 hasChanged = true;
                                 //mi.marker.remove();
                                 //mj.marker.remove();
@@ -492,7 +511,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             } while (hasChanged);
 
             Map.Entry<String, MarkerInfo>[] entries = getMarkerInfoEntries();
-            Log.d("consolidate", "entries size: " + entries.length);
+            //Log.d("consolidate", "entries size: " + entries.length);
             for (int i = 0; i < entries.length; i++) {
                 MarkerInfo mi = entries[i].getValue();
                 //if (mi.isConsolidated) {
@@ -503,14 +522,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                             continue;
                         MarkerInfo mj = entries[j].getValue();
                         if (isOverlapping(mi, mj)) {
-                            Log.d("consolidate", i + " " + j);
+                            //Log.d("consolidate", i + " " + j);
                             hasChangedOuter = true;
                             overlapping.add(j);
                         }
                     }
                     if (overlapping.size() > 1 || (mi.forceLoc && overlapping.size() > 0)) {
                         //Log.d("consolidate", "before consolidating " + i + ", size " + markerInfoMap.size());
-                        Log.d("consolidate", "before consolidating " + mi.maxBleat().getMessage());
+                        //Log.d("consolidate", "before consolidating " + mi.maxBleat().getMessage());
                         ArrayList<Bleat> bleatList = new ArrayList<Bleat>();
                         //Log.d("consolidate", "osize "+overlapping.size());
                         int kstart = mi.forceLoc ? 0 : 1;
@@ -518,7 +537,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         for (int k = kstart; k < overlapping.size(); k++) {
                             int j = overlapping.get(k);
                             MarkerInfo mj = entries[j].getValue();
-                            Log.d("consolidate", "during consolidating " + mj.maxBleat().getMessage());
+                            //Log.d("consolidate", "during consolidating " + mj.maxBleat().getMessage());
                             bleatList.addAll(Arrays.asList(mj.bleats));
                             if(k > kstart)
                                 entries[j] = null;
@@ -537,7 +556,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         LatLng newLoc = separate(mj, mi);
 
 
-                        Log.d("consolidate", "moving \"" + mi.maxBleat().getMessage() + "\" to side of \"" + mj.maxBleat().getMessage() + "\"");
+                        //Log.d("consolidate", "moving \"" + mi.maxBleat().getMessage() + "\" to side of \"" + mj.maxBleat().getMessage() + "\"");
 
                         //mi.marker.remove();
                         markerInfoMap.remove(mi.bleats[0].getBID());
@@ -591,7 +610,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     public void onCameraChange(CameraPosition change) {
         Log.d("map", "cameraChanged");
-        drawBleats(true);
+        drawBleatsOnMap();
     }
 
     @Override
