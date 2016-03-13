@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     public PagerAdapter adapter;
     public Handler handler;
+    //private Handler parentHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
                         {
                             public void onClick(DialogInterface dialog, int which) {
                                 MainActivity.this.finish();
+                                // TODO: may need to before previous line
+                               // parentHandler.sendEmptyMessage(Constants.CONNECTION_ERROR);
                             }
                         }
 

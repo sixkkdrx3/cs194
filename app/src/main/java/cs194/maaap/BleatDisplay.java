@@ -11,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Base64;
 import android.util.Log;
@@ -35,6 +37,8 @@ public class BleatDisplay extends Activity {
 
     private LinearLayout scroll;
     private Bleat bleat;
+    public Handler handler;
+    private Handler parentHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,31 @@ public class BleatDisplay extends Activity {
         Intent i = getIntent();
 
         String myBID = (String)i.getSerializableExtra("myBID");
+        parentHandler = (Handler)i.getSerializableExtra("parentHandler");
+
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Log.d("handler", "received message with what = " + msg.what);
+                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(BleatDisplay.this).create();
+                alertDialog.setTitle("No Internet Connection");
+                alertDialog.setMessage("There is no Internet Connection now.");
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener()
+
+                        {
+                            public void onClick(DialogInterface dialog, int which) {
+                                BleatDisplay.this.finish();
+                                // TODO: may need to before previous line
+                                if (parentHandler != null)
+                                    parentHandler.sendEmptyMessage(Constants.CONNECTION_ERROR);
+                            }
+                        }
+
+                );
+                alertDialog.show();
+            }
+        };
+
         bleat = DataStore.getInstance().getBleat(myBID);
         DataStore.getInstance().addSeenBleat(myBID);
 

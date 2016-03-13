@@ -2,6 +2,7 @@ package cs194.maaap;
 
 import android.app.Activity;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -103,9 +104,14 @@ public class CommentAction {
     }
 
     public List<Comment> getComments() {
-        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-        PaginatedScanList<Comment> result = mapper.scan(Comment.class, scanExpression);
-        return result;
+        try {
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+            PaginatedScanList<Comment> result = mapper.scan(Comment.class, scanExpression);
+            return result;
+        } catch (Throwable t) {
+            Log.d("throw", "getCommentsError");
+            return null;
+        }
     }
 }
 
