@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,12 +23,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -152,7 +155,7 @@ public class BleatDisplay extends Activity {
 //                return false;
 //            }
 //        });
-
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Button reportBtn = (Button) findViewById(R.id.report_button);
         reportBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -184,6 +187,10 @@ public class BleatDisplay extends Activity {
                     } catch (Exception e) { }
                 }
                 tv.setText("");
+                InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(tv.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                Toast.makeText(BleatDisplay.this, "Comment successfully!",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
