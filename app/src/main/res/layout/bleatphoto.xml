@@ -17,8 +17,9 @@
     </ImageView>
     <ImageButton android:id="@+id/close_image"
         android:src="@drawable/times_circle_white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:scaleType="centerInside"
         android:visibility="invisible"
         android:background="@null"
         android:layout_alignParentEnd="true" />

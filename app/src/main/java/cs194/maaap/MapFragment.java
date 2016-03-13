@@ -54,7 +54,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private HashMap<String, MarkerInfo> markerInfoMap;
     private long lastUpdated;
     private MainActivity parentActivity;
-    private int thumbnailSize = 128;
+    public static int THUMBNAIL_SIZE = 128;
 
     public class MarkerInfo {
         public Bitmap bitmap;
@@ -254,7 +254,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         {
             byte[] imageBytes = Base64.decode(bleat.getMessage().getBytes(), Base64.DEFAULT);
             Bitmap fullBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-            Pair<Integer, Integer> size = scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), thumbnailSize, thumbnailSize);
+            Pair<Integer, Integer> size = scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), THUMBNAIL_SIZE, THUMBNAIL_SIZE);
             markerBitmap = fullBitmap.createScaledBitmap(fullBitmap, size.first, size.second, true);
             anchorU = 0.5f;
             anchorV = 1.0f;
@@ -295,7 +295,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             lng += (((bleats[0].getBID() + " lng").hashCode() % 1024) - 512) / 1024.0 * 0.005;
         }
 
-        Bitmap markerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_chat_bubble_white_24dp);
+        Bitmap markerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.comment_o);
         MarkerOptions markerOptions = new MarkerOptions().
                 icon(BitmapDescriptorFactory.fromBitmap(markerBitmap)).
                 position(new LatLng(lat, lng)).
