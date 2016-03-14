@@ -180,6 +180,10 @@ public class BleatAction {
     }
 
     public void downloadPhoto(String id, final ImageView imageView) {
+        downloadPhoto(id, imageView, null);
+    }
+
+    public void downloadPhoto(String id, final ImageView imageView, final Runnable r) {
         String filename = id;
         final File file = new File(activity.getCacheDir(), filename);
         TransferObserver observer = transferUtility.download(
@@ -194,6 +198,9 @@ public class BleatAction {
                     imageView.setImageBitmap(bitmap);
                     //Log.d("DownloadPhoto", "bitmap dimensions: " + bitmap.getWidth() + " x " + bitmap.getHeight());
                     Log.d("DownloadPhoto", "Image downloaded");
+                    if(r != null) {
+                        r.run();
+                    }
                 }
             }
 

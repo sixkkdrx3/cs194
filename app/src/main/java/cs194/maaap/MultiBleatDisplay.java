@@ -108,7 +108,7 @@ public class MultiBleatDisplay extends Activity {
                 Pair<Integer, Integer> size = MapFragment.scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), maxPhotoWidth, maxPhotoHeight);
                 Bitmap bitmap = fullBitmap.createScaledBitmap(fullBitmap, size.first, size.second, true);
                 msgPhoto.setImageBitmap(bitmap);*/
-                msgPhoto.setImageResource(R.drawable.blank);
+                msgPhoto.setImageResource(R.drawable.picture_o);
                 try {
                     bleatAction.downloadPhoto(bleat.getPhotoID(), msgPhoto);
                 } catch (Exception e) {

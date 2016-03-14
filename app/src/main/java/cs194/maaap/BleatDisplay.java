@@ -3,6 +3,7 @@ package cs194.maaap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.app.AlertDialog;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -85,24 +89,39 @@ public class BleatDisplay extends Activity {
         }
         else
         {
-            Log.d("val","hi from val");
+            Log.d("val", "hi from val");
             ViewGroup parent = (ViewGroup) message.getParent();
             int index = parent.indexOfChild(message);
             Log.d("val", "xy" + index);
             parent.removeView(message);
             final ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatsingle_photo, parent, false);
-            msgPhoto.setImageResource(R.drawable.blank);
+            msgPhoto.setImageResource(R.drawable.picture_o);
             final BleatAction bleatAction = new BleatAction(this, "BleatDisplay");
             try {
-                bleatAction.downloadPhoto(bleat.getPhotoID(), msgPhoto);
+                bleatAction.downloadPhoto(bleat.getPhotoID(), msgPhoto, new Runnable() {
+                    public void run() {
+                        msgPhoto.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                Dialog photoDialog = new Dialog(BleatDisplay.this);
+                                photoDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+                                photoDialog.setContentView(getLayoutInflater().inflate(R.layout.photo_dialog, null));
+                                photoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+                                ImageView dialogImage = (ImageView) photoDialog.findViewById(R.id.dialog_image);
+                                dialogImage.setImageBitmap(((BitmapDrawable) msgPhoto.getDrawable()).getBitmap());
+
+                                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                lp.copyFrom(photoDialog.getWindow().getAttributes());
+                                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                                lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+                                photoDialog.show();
+                                photoDialog.getWindow().setAttributes(lp);
+                            }
+                        });
+                    }
+                });
             } catch (Exception e) {
             }
-
-            msgPhoto.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-
-                }
-            });
             parent.addView(msgPhoto, index);
 
         }
@@ -181,7 +200,8 @@ public class BleatDisplay extends Activity {
                     SaveComment saveComment = new SaveComment(commentAction, BleatDisplay.this);
                     try {
                         saveComment.execute(res);
-                    } catch (Exception e) { }
+                    } catch (Exception e) {
+                    }
                 }
                 tv.setText("");
                 InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
