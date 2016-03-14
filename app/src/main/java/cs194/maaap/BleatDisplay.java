@@ -90,20 +90,17 @@ public class BleatDisplay extends Activity {
             int index = parent.indexOfChild(message);
             Log.d("val", "xy" + index);
             parent.removeView(message);
-            ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatsingle_photo, parent, false);
-            byte[] decodedByte = Base64.decode(bleat.getMessage(), 0);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
-            msgPhoto.setImageBitmap(bitmap);
-            final BleatAction bleatAction = new BleatAction(this, "bleatDisplay");
+            final ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatsingle_photo, parent, false);
+            msgPhoto.setImageResource(R.drawable.blank);
+            final BleatAction bleatAction = new BleatAction(this, "BleatDisplay");
+            try {
+                bleatAction.downloadPhoto(bleat.getPhotoID(), msgPhoto);
+            } catch (Exception e) {
+            }
 
             msgPhoto.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Log.d("click", "clicked");
-                    DownloadPhoto downloadPhoto = new DownloadPhoto(bleatAction);
-                    try {
-                        downloadPhoto.execute(bleat.getPhotoID());
-                    } catch (Exception e) { }
-                    /* TODO: display file */
+
                 }
             });
             parent.addView(msgPhoto, index);
@@ -189,8 +186,6 @@ public class BleatDisplay extends Activity {
                 tv.setText("");
                 InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 in.hideSoftInputFromWindow(tv.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                Toast.makeText(BleatDisplay.this, "Comment successfully!",
-                        Toast.LENGTH_LONG).show();
             }
         });
     }

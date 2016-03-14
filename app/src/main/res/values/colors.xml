@@ -5,6 +5,9 @@
     <color name="colorAccent">#FF4081</color>
     <color name="bggrey">#DDDDDD</color>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="darkgrey">#444444</color>
+    <color name="grey">#AAAAAA</color>
     <color name="me_green">#79ff9d</color>
 
     <!--Indigo 500-->

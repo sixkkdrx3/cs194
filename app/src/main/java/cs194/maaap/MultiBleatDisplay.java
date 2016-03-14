@@ -68,7 +68,7 @@ public class MultiBleatDisplay extends Activity {
             final ImageView down = (ImageView) view.findViewById(R.id.down);
             final TextView number = (TextView) view.findViewById(R.id.num);
             int num = bleat.getUpvotes().size() - bleat.getDownvotes().size();
-            final BleatAction bleatAction = new BleatAction(this, "BleatDisplay");
+            final BleatAction bleatAction = new BleatAction(this, "MultiBleatDisplay");
             number.setText(Integer.toString(num));
 
             up.setOnClickListener(new View.OnClickListener() {
@@ -104,11 +104,15 @@ public class MultiBleatDisplay extends Activity {
                 parent.removeView(bleatText);
                 ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatlist_photo, parent, false);
                 parent.addView(msgPhoto, index);
-                byte[] decodedByte = Base64.decode(bleat.getMessage(), 0);
-                Bitmap fullBitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+                /*Bitmap fullBitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
                 Pair<Integer, Integer> size = MapFragment.scalePreserveRatio(fullBitmap.getWidth(), fullBitmap.getHeight(), maxPhotoWidth, maxPhotoHeight);
                 Bitmap bitmap = fullBitmap.createScaledBitmap(fullBitmap, size.first, size.second, true);
-                msgPhoto.setImageBitmap(bitmap);
+                msgPhoto.setImageBitmap(bitmap);*/
+                msgPhoto.setImageResource(R.drawable.blank);
+                try {
+                    bleatAction.downloadPhoto(bleat.getPhotoID(), msgPhoto);
+                } catch (Exception e) {
+                }
             }
 
             final TextView voteText = (TextView)view.findViewById(R.id.num);

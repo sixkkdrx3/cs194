@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
 
     android:background="@color/material_grey_100">
@@ -20,8 +23,9 @@
         android:orientation="vertical">
         <ImageView
             android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_stars_black_24dp" />
     <TextView
         android:textAlignment="center"
@@ -37,14 +41,27 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/material_grey_300"
-        android:layout_marginBottom="10dp"/>
+        android:background="@color/grey"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="5dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ACHIEVEMENTS"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="left"
+        />
 
-    <View
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/material_grey_300"
-        android:layout_marginTop="10dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/trophy_cabinet">
+    </LinearLayout>
+
 
         <TextView
             android:background="@color/white"
@@ -55,6 +72,7 @@
             android:id="@+id/button1"
             android:layout_gravity="fill_vertical"
             android:paddingLeft="10dp"
+            android:layout_marginTop="15dp"
             android:paddingRight="10dp"/>
         <View
         android:layout_width="match_parent"
@@ -94,7 +112,5 @@
         android:layout_height="1dp"
         android:background="@color/material_grey_300"
         />
-
-
-
 </LinearLayout>
+</ScrollView>

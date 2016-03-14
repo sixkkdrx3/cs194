@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -31,6 +32,31 @@ public class UserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user, container, false);
+        LinearLayout trophyCabinet = (LinearLayout) v.findViewById(R.id.trophy_cabinet);
+
+        Achievement[] achievements = Achievement.getAchievements();
+        int num_rows = (achievements.length + 3-1)/3;
+        LinearLayout[] trophyRows = new LinearLayout[num_rows];
+        for(int i = 0; i <num_rows; i++) {
+            trophyRows[i] = (LinearLayout) inflater.inflate(R.layout.trophy_row, trophyCabinet, false);
+            trophyCabinet.addView(trophyRows[i]);
+            for(int j = i*3; j < (i+1)*3 && j < achievements.length; j++) {
+                LinearLayout trophy = (LinearLayout) inflater.inflate(R.layout.trophy_elem, trophyRows[i], false);
+                trophyRows[i].addView(trophy);
+                ImageView trophyImage = (ImageView) trophy.findViewById(R.id.trophy_image);
+                TextView trophyName = (TextView) trophy.findViewById(R.id.trophy_name);
+                TextView trophyDescription = (TextView) trophy.findViewById(R.id.trophy_description);
+                trophyImage.setImageResource(achievements[j].resid);
+                trophyName.setText(achievements[j].name);
+                trophyDescription.setText(achievements[j].description);
+                Log.d("User Fragment", achievements[j].name);
+                /*trophyImage.setImageResource(R.drawable.camera_retro);
+                trophyName.setText("test name");
+                trophyDescription.setText("test description");*/
+            }
+        }
+
+
         final TextView button1 = (TextView)v.findViewById(R.id.button1);
         final TextView button2 = (TextView)v.findViewById(R.id.button2);
         final TextView button3 = (TextView)v.findViewById(R.id.button3);
