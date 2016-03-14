@@ -2,7 +2,9 @@ package cs194.maaap;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.cognito.exceptions.NetworkException;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -23,8 +25,11 @@ import java.util.List;
 import java.util.HashSet;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.Settings.Secure;
 import android.util.Log;
+import android.widget.ImageView;
 
 /**
  * Created by kaidi on 1/24/16.
@@ -172,14 +177,30 @@ public class BleatAction {
         );
     }
 
-    public File downloadPhoto(String id) {
+    public void downloadPhoto(String id, final ImageView imageView) {
         String filename = id;
-        File file = new File(activity.getCacheDir(), filename);
+        final File file = new File(activity.getCacheDir(), filename);
         TransferObserver observer = transferUtility.download(
                 "cs194",
                 id,
                 file
         );
-        return file;
+        observer.setTransferListener(new TransferListener() {
+            public void onStateChanged(int id, TransferState state) {
+                if(state == TransferState.COMPLETED) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    imageView.setImageBitmap(bitmap);
+                    //Log.d("DownloadPhoto", "bitmap dimensions: " + bitmap.getWidth() + " x " + bitmap.getHeight());
+                    Log.d("DownloadPhoto", "Image downloaded");
+                }
+            }
+
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+            }
+
+            public void onError(int id, Exception e) {
+                Log.e("DownloadPhoto", "Error Downloading image");
+            }
+        });
     }
 }

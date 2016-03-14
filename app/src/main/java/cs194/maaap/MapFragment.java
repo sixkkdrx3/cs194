@@ -153,7 +153,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         else
         {
             displayIntent = new Intent(parentActivity, MultiBleatDisplay.class);
-            displayIntent.putExtra("title","Bleats located here");
+            displayIntent.putExtra("title","Bleats!");
             displayIntent.putExtra("myBIDs", bids);
         }
 

@@ -12,24 +12,35 @@
         android:text="Bleat!"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:background="#4099FF"
+        android:background="#90C3D4"
         android:textColor="#ffffff"
+        android:layout_weight="0"
         />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:id="@+id/scroll_view" >
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="fill_parent">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:minHeight="150dp"
+        android:layout_height="wrap_content"
         android:weightSum="1"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="10dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp">
 
         <TextView
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/bleat_content"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:fontFamily="sans-serif"
             android:background="@null"
             android:gravity="left"
@@ -40,68 +51,69 @@
             android:layout_weight="0.15"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:weightSum="1"
            >
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                >
 
-            <ImageView
-                android:id="@+id/up"
-                android:src="@drawable/sarrowup"
+                <ImageView
+                    android:id="@+id/up"
+                    android:src="@drawable/sarrowup"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="#ffffff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+                <TextView
+                    android:id="@+id/num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="000"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/down"
+                    android:src="@drawable/sarrowdown"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    />
+                </LinearLayout>
+
+            <Button
+                android:layout_weight="0"
+                android:id="@+id/report_button"
                 android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="right"
+                android:layout_height="25dp"
                 android:textColor="#ffffff"
-                android:layout_weight = "0.4"
-                android:padding = "15dp"
-                />
-
-            <TextView
-                android:id="@+id/num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="000"
-                android:textAlignment="center"
-                android:layout_gravity="right"
-                android:layout_weight = "0.2"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif"
-                android:textStyle="bold"
-                android:layout_marginRight="15dp"
-                />
-
-            <ImageView
-                android:id="@+id/down"
-                android:layout_weight = "0.4"
-                android:src="@drawable/sarrowdown"
-                android:layout_gravity="right"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding = "15dp"
-
-                />
+                android:background="#dd4b39"
+                android:text="Report"
+                android:textSize="10sp"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="bottom|center_horizontal"/>
         </LinearLayout>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/report_button"
-        android:layout_width="50dp"
-        android:layout_height="25dp"
-        android:textColor="#ffffff"
-        android:background="#dd4b39"
-        android:text="Report"
-        android:textSize="10sp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_gravity="bottom|right"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"/>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:id="@+id/scroll_view" >
 
         <LinearLayout
             android:id="@+id/comment_layout"
@@ -109,47 +121,51 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
+        </LinearLayout>
         </LinearLayout>
     </ScrollView>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_weight="0"
         android:background="@android:color/darker_gray"/>
     <LinearLayout
+        android:layout_weight="0"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="bottom"
         android:weightSum="1"
+        android:padding="10dp"
         android:background="@color/material_grey_300">
 
         <EditText
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="top|start"
             android:id="@+id/new_comment"
-            android:layout_weight="0.8"
-            android:hint="  Add your comment..."
-            android:layout_margin="15dp"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:textSize="12sp"
+            android:maxLength="140"
+            android:layout_weight="1"
             android:imeOptions="actionDone"
             android:background="@drawable/text_style" />
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="0.2"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_weight="0"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
         <Button
-
             android:layout_width="50dp"
-            android:layout_height="fill_parent"
+            android:layout_height="30dp"
             android:text="Reply"
             android:textColor="#ffffff"
             android:textStyle="bold"
-            android:textSize="10sp"
-            android:background="#4099FF"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+            android:textSize="12sp"
+            android:background="#90C3D4"
             android:layout_gravity="center"
             android:id="@+id/comment_button"
             />
