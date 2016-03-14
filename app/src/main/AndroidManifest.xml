@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -46,14 +47,18 @@
         </activity>
         <activity
             android:name=".BleatDisplay"
-            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
-        <activity android:name=".MultiBleatDisplay"></activity>
-        <activity android:name=".CameraActivity"></activity>
-        <activity android:name=".BleatCreateActivity"></activity>
-        <activity android:name=".PhotoEditActivity"></activity>
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name=".MultiBleatDisplay" />
+        <activity android:name=".CameraActivity" />
+        <activity android:name=".BleatCreateActivity" />
+        <activity android:name=".PhotoEditActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".OnboardingActivity"
+            android:label="@string/title_activity_onboarding"
             android:theme="@style/AppTheme"></activity>
     </application>
 

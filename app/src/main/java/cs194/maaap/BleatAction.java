@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.HashSet;
 
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.Settings.Secure;
@@ -39,6 +40,7 @@ public class BleatAction {
     private DynamoDBMapper mapper;
     double coords[];
     private Activity activity;
+    private Handler handler;
     private TransferUtility transferUtility;
 
     public BleatAction(Activity activity, String activityType) {
@@ -50,10 +52,10 @@ public class BleatAction {
         );
         AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         mapper = new DynamoDBMapper(ddbClient);
-        if (activityType.equals("MapsActivity"))
-            coords = ((MapFragment)(((MainActivity)activity).adapter.getItem(0))).getGPS();
-        else if (activityType.equals("BleatCreateActivity"))
-        {
+        if (activityType.equals("MapsActivity")) {
+            coords = ((MapFragment) (((MainActivity) activity).adapter.getItem(0))).getGPS();
+            handler = ((MainActivity) activity).handler;
+        } else if (activityType.equals("BleatCreateActivity")) {
             coords = ((BleatCreateActivity) activity).coords;
         }
 
@@ -162,7 +164,7 @@ public class BleatAction {
         try {
             DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
             result = mapper.scan(Bleat.class, scanExpression);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             handleError();
         }
         return result;

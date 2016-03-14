@@ -39,20 +39,24 @@ public class DataStore {
     public Comment getComment(String CID) {return downloadedComments.get(CID);}
 
     public void updateBleats(Bleat bleat) {
+        if (bleat == null) return;
         downloadedBleats.put(bleat.getBID(), bleat);
         bleatLastUpdated = Calendar.getInstance().getTimeInMillis();
     }
     public void updateBleats(List<Bleat> bleats) {
+        if (bleats == null) return;
         for (Bleat bleat : bleats)
             downloadedBleats.put(bleat.getBID(), bleat);
         bleatLastUpdated = Calendar.getInstance().getTimeInMillis();
     }
 
     public void updateComments(Comment comment) {
+        if (comment == null) return;
         downloadedComments.put(comment.getCID(), comment);
         commentLastUpdated = Calendar.getInstance().getTimeInMillis();
     }
     public void updateComments(List<Comment> comments) {
+        if (comments == null) return;
         for (Comment comment : comments)
             downloadedComments.put(comment.getCID(), comment);
         commentLastUpdated = Calendar.getInstance().getTimeInMillis();
