@@ -9,9 +9,16 @@ import java.util.List;
 public class GetBleats extends AsyncTask<Void, Void, List<Bleat> > {
 
     private BleatAction bleatAction;
+    private GetBleats.Runnable runnable;
 
     public GetBleats(BleatAction bleatAction) {
         this.bleatAction = bleatAction;
+        runnable = null;
+    }
+
+    public GetBleats(BleatAction bleatAction, GetBleats.Runnable runnable) {
+        this.bleatAction = bleatAction;
+        this.runnable = runnable;
     }
 
     protected List<Bleat> doInBackground(Void... Params) {
@@ -19,6 +26,18 @@ public class GetBleats extends AsyncTask<Void, Void, List<Bleat> > {
     }
 
     protected void onPostExecute(List<Bleat> bleats) {
-        DataStore.getInstance().updateBleats(bleats);
+        DataStore store = DataStore.getInstance();
+        synchronized(store) {
+            store.updateBleats(bleats);
+            store.bleatsDownloaded = true;
+            store.notifyAll();
+        }
+        if(runnable != null) {
+            runnable.run(bleats);
+        }
+    }
+
+    public abstract static class Runnable {
+        public abstract void run(List<Bleat> bleats);
     }
 }

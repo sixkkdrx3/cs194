@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -132,11 +133,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        try {
+        /*try {
             BleatAction bleatAction = new BleatAction(parentActivity, "Main");
             GetBleats getBleats = new GetBleats(bleatAction);
             getBleats.execute();
-        } catch (Exception e) { }
+        } catch (Exception e) { }*/
         return v;
     }
 
@@ -169,8 +170,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     public void drawBleatsOnMap() {
         BleatAction bleatAction = new BleatAction(parentActivity, "main");
-        DrawBleats drawBleats = new DrawBleats(bleatAction, this);
-        drawBleats.execute();
+        GetBleats drawBleats = new GetBleats(bleatAction, new GetBleats.Runnable() {
+            public void run(List<Bleat> bleats) {
+                MapFragment.this.drawBleats(bleats);
+            }
+        });
+        drawBleats.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -255,7 +260,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         Bitmap markerBitmap;
         double lat = bleat.getLatitude(), lng = bleat.getLongitude();
         float anchorU, anchorV;
-        if(bleat.getMessage().length() < 200) {
+        if(bleat.getPhotoID() == "") {
             IconGenerator iconFactory = new IconGenerator(parentActivity);
             // Remove the random function below later
             if (location == null) {

@@ -83,16 +83,13 @@ public class BleatDisplay extends Activity {
         DataStore.getInstance().addSeenBleat(myBID);
 
         TextView message = (TextView)findViewById(R.id.bleat_content);
-        if(bleat.getMessage().length()<200) {
+        if(bleat.getPhotoID() == "") {
             message.setText(bleat.getMessage());
-            Log.d("val", "lol");
         }
         else
         {
-            Log.d("val", "hi from val");
             ViewGroup parent = (ViewGroup) message.getParent();
             int index = parent.indexOfChild(message);
-            Log.d("val", "xy" + index);
             parent.removeView(message);
             final ImageView msgPhoto = (ImageView) getLayoutInflater().inflate(R.layout.bleatsingle_photo, parent, false);
             msgPhoto.setImageResource(R.drawable.picture_o);
@@ -157,6 +154,7 @@ public class BleatDisplay extends Activity {
         scroll = (LinearLayout)findViewById(R.id.comment_layout);
         final CommentAction commentAction = new CommentAction(this, bleat.getBID());
 
+        Log.d("BleatDisplay", "calling getComments");
         GetComments getComments = new GetComments(commentAction, this);
         try {
             getComments.execute();
