@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,20 +36,11 @@ public class Achievement {
         return thresholds[thresholds.length - 1];
     }
 
-    public static Achievement[] getAchievements(String id) {
+    public static Achievement[] getAchievements(String id, List<Bleat> bleats, List<Comment> comments) {
         ArrayList<Achievement> achievements = new ArrayList<Achievement>();
 
         DataStore store = DataStore.getInstance();
-        synchronized(store) {
-            while(!store.bleatsDownloaded) {
-                Log.d("Achievement", "waiting for bleats to download");
-                try {
-                    store.wait();
-                } catch(InterruptedException e) {}
-            }
-        }
 
-        List<Bleat> bleats = store.getOwnBleats(id);
         int num_bleats = bleats.size();
         if(num_bleats > 0) { //check achievement for number of bleats
             int[] thresholds = {1, 5, 10, 25, 50, 100, 200, 500, 1000};
@@ -67,21 +59,11 @@ public class Achievement {
             achievements.add(new Achievement(R.drawable.camera_retro,"Photographer",threshold == 1 ? "Posted a photo" :threshold + " photo club",threshold));
         }
 
-        synchronized(store) {
-            while(!store.commentsDownloaded) {
-                Log.d("Achievement", "waiting for comments to download");
-                try {
-                    store.wait();
-                } catch(InterruptedException e) {}
-            }
-        }
-
-        List<Comment> comments = store.getOwnComments(id);
         int num_comments = comments.size();
         if(num_comments > 0) { //check achievement for number of comments
             int[] thresholds = {1, 5, 10, 25, 50, 100, 200, 500, 1000};
             int threshold = getThreshold(thresholds, num_comments);
-            achievements.add(new Achievement(R.drawable.comments,"Chit Chat Crew",threshold == 1 ? "Posted a comment" :threshold + " comment club",threshold));
+            achievements.add(new Achievement(R.drawable.comments_trophy,"Chit Chat Crew",threshold == 1 ? "Posted a comment" :threshold + " comment club",threshold));
         }
 
 
@@ -144,8 +126,31 @@ public class Achievement {
                 trophyName = "Elder";
                 resid = R.drawable.birthday_cake;
             }
-            achievements.add(new Achievement(resid, trophyName, timeName + " club", 0));
+            achievements.add(new Achievement(resid, trophyName, timeName + " club", threshold));
         }
+
+        for(Bleat bleat : bleats) {
+            Date date = new Date(bleat.getTime());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if(hour >= 1 && hour <= 4) {
+                achievements.add(new Achievement(R.drawable.owl, "Night Owl", "Late night bleats", 0));
+                break;
+            }
+        }
+
+        for(Bleat bleat : bleats) {
+            Date date = new Date(bleat.getTime());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if(hour >= 5 && hour <= 7) {
+                achievements.add(new Achievement(R.drawable.bird, "Early Bird", "Early morning bleats", 0));
+                break;
+            }
+        }
+
         return achievements.toArray(new Achievement[achievements.size()]);
     }
 }

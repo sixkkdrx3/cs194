@@ -56,10 +56,38 @@ public class UserFragment extends Fragment {
 
         AsyncTask<Void, Void, Achievement[]> setAchievements = new AsyncTask<Void, Void, Achievement[]>() {
 
+            private int reputation = 0;
+
             @Override
             protected Achievement[] doInBackground(Void... Params) {
                 Log.d("UserFragment", "Retrieving achievements");
-                Achievement[] achievements = Achievement.getAchievements(id);
+                DataStore store = DataStore.getInstance();
+                synchronized(store) {
+                    while(!store.bleatsDownloaded) {
+                        Log.d("Achievement", "waiting for bleats to download");
+                        try {
+                            store.wait();
+                        } catch(InterruptedException e) {}
+                    }
+                }
+                synchronized(store) {
+                    while(!store.commentsDownloaded) {
+                        Log.d("Achievement", "waiting for comments to download");
+                        try {
+                            store.wait();
+                        } catch(InterruptedException e) {}
+                    }
+                }
+
+                List<Bleat> bleats = store.getOwnBleats(id);
+                List<Comment> comments = store.getOwnComments(id);
+                Achievement[] achievements = Achievement.getAchievements(id, bleats, comments);
+                for(Bleat bleat : bleats) {
+                    reputation += bleat.computeNetUpvotes();
+                }
+                for(Comment comment : comments) {
+                    reputation += comment.computeNetUpvotes();
+                }
                 Log.d("UserFragment", "Achievements retrieved");
                 return achievements;
             }
@@ -85,16 +113,17 @@ public class UserFragment extends Fragment {
                     }
                 }
                 Log.d("UserFragment", "Achievements Drawn");
+
+                TextView reputationView = (TextView) v.findViewById(R.id.reputation);
+                reputationView.setText(Integer.toString(reputation));
             }
         };
 
         setAchievements.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-
-
-        final TextView button1 = (TextView)v.findViewById(R.id.button1);
-        final TextView button2 = (TextView)v.findViewById(R.id.button2);
-        final TextView button3 = (TextView)v.findViewById(R.id.button3);
+        final LinearLayout button1 = (LinearLayout)v.findViewById(R.id.button1);
+        final LinearLayout button2 = (LinearLayout)v.findViewById(R.id.button2);
+        final LinearLayout button3 = (LinearLayout)v.findViewById(R.id.button3);
 
 
     /*    List<Bleat> ownBleats = DataStore.getInstance().getOwnBleats(id);
@@ -115,9 +144,9 @@ public class UserFragment extends Fragment {
             tv3.setText(commented.get(0).getMessage());
         }*/
 
-        button1.setTransformationMethod(null);
+        /*button1.setTransformationMethod(null);
         button2.setTransformationMethod(null);
-        button3.setTransformationMethod(null);
+        button3.setTransformationMethod(null);*/
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent;

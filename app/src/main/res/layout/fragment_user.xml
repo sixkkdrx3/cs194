@@ -9,13 +9,6 @@
 
     android:background="@color/material_grey_100">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/material_grey_300"
-        android:layout_marginTop="20dp"
-        />
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +27,7 @@
         android:textSize="24sp"
         android:id="@+id/reputation"
         android:textStyle="bold"
-        android:text="1337"
+        android:text=" "
         android:gravity="center"/>
 
     </LinearLayout>
@@ -62,55 +55,71 @@
         android:id="@+id/trophy_cabinet">
     </LinearLayout>
 
-
-        <TextView
-            android:background="@color/white"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="View all your bleats."
-            android:id="@+id/button1"
-            android:layout_gravity="fill_vertical"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="15dp"
-            android:paddingRight="10dp"/>
-        <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/material_grey_300"
-        />
-        <TextView
-            android:gravity="center"
-            android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="View all bleats you liked."
-            android:id="@+id/button2"
-            android:layout_gravity="fill_vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"/>
-
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/material_grey_300"
-        />
+        android:background="@color/grey"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:gravity="center"
-            android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="View all bleats you commented on."
-            android:id="@+id/button3"
-            android:layout_gravity="fill_vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"/>
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/material_grey_300"
-        />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/button1"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/sheep"/>
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:text="My Bleats"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button2"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/thumbs_up"/>
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:text="Bleats I Liked"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button3"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/comments"/>
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:text="Bleats I Commented On"/>
+    </LinearLayout>
 </LinearLayout>
 </ScrollView>
