@@ -2,6 +2,7 @@ package cs194.maaap;
 
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import java.util.List;
 
@@ -20,16 +21,24 @@ public class GetComments extends AsyncTask<Void, Void, List<Comment> > {
     }
 
     protected List<Comment> doInBackground(Void... Params) {
-        return commentAction.getComments();
+        Log.d("GetComments", "downloading comments");
+        List<Comment> result = commentAction.getComments();
+        Log.d("GetComments", "comments downloaded");
+        return result;
     }
 
     protected void onPostExecute(List<Comment> comments) {
-        if (bleatDisplay == null) {
-            DataStore.getInstance().updateComments(comments);
-            return;
+        DataStore store = DataStore.getInstance();
+        Log.d("GetComments", "comments downloaded onPostExecute");
+        synchronized(store) {
+            store.updateComments(comments);
+            store.commentsDownloaded = true;
+            store.notifyAll();
         }
-        for (Comment comment : comments) {
-            bleatDisplay.addView(comment);
+        if (bleatDisplay != null) {
+            for (Comment comment : comments) {
+                bleatDisplay.addView(comment);
+            }
         }
     }
 }

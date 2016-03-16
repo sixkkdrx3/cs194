@@ -28,6 +28,7 @@ public class Bleat implements Serializable {
         upvotes.add(Constants.DEFAULT_BLAH);
         downvotes.add(Constants.DEFAULT_BLAH);
         reports.put(Constants.DEFAULT_BLAH, Constants.DEFAULT_BLAH);
+        photoID = "";
     }
 
     @DynamoDBHashKey(attributeName = "BID")
