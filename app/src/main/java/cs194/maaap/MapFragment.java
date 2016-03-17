@@ -433,11 +433,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 aBox.first.y >= bBox.second.y || aBox.second.y <= bBox.first.y);
     }
 
+    public boolean hasSeenAnyBleat(Bleat[] bleats) {
+        DataStore store = DataStore.getInstance();
+        for(Bleat bleat : bleats) {
+            if(store.hasSeenBleat(bleat.getBID()))
+                return true;
+        }
+        return false;
+    }
+
     public Comparator<Map.Entry<String, MarkerInfo>> getEntryComparator()
     {
         return Collections.reverseOrder(new Comparator<Map.Entry<String, MarkerInfo>>() {
+
+
             @Override
             public int compare(Map.Entry<String, MarkerInfo> entry1, Map.Entry<String, MarkerInfo> entry2) {
+                boolean hsab1 = hasSeenAnyBleat(entry1.getValue().bleats);
+                boolean hsab2 = hasSeenAnyBleat(entry2.getValue().bleats);
+                if(hsab1 ^ hsab2) {
+                    return hsab1 ? -1 : 1;
+                }
                 if(entry1.getValue().gt(entry2.getValue()))
                     return 1;
                 else if(entry2.getValue().gt(entry1.getValue()))
@@ -456,8 +472,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         return entries;
     }
 
+    public static String getMarkerMessages(Bleat[] bleats) {
+        String result = "";
+        for(Bleat bleat : bleats) {
+            if(!result.equals("")) {
+                result = result + ", ";
+            }
+            result = result + "\"" + bleat.getMessage() + "\"";
+        }
+        return result;
+    }
+
     public void consolidateBleats()
     {
+        Map.Entry<String, MarkerInfo>[] entries2 = getMarkerInfoEntries();
+        Log.d("MapFragment", "Printing entries");
+        for(Map.Entry<String, MarkerInfo> entry : entries2) {
+            if(entry.getValue().bleats[0].getPhotoID() == "")
+                Log.d("MapFragment", entry.getValue().bleats[0].getMessage());
+        }
+
+
         boolean hasChangedOuter;
         do {
             hasChangedOuter = false;
@@ -494,8 +529,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                                 }
                             } else if (mi.isConsolidated) //merge them
                             {
-                                //Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
-                                //Log.d("consolidate", "merging " + mi.maxBleat().getMessage());
+                                Log.d("consolidate", "merging " + getMarkerMessages(mi.bleats) + " and " + getMarkerMessages(mj.bleats) );
                                 hasChanged = true;
                                 //mi.marker.remove();
                                 //mj.marker.remove();
@@ -534,7 +568,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     }
                     if (overlapping.size() > 1 || (mi.forceLoc && overlapping.size() > 0)) {
                         //Log.d("consolidate", "before consolidating " + i + ", size " + markerInfoMap.size());
-                        //Log.d("consolidate", "before consolidating " + mi.maxBleat().getMessage());
+                        Log.d("consolidate", "before consolidating " + getMarkerMessages(mi.bleats));
                         ArrayList<Bleat> bleatList = new ArrayList<Bleat>();
                         //Log.d("consolidate", "osize "+overlapping.size());
                         int kstart = mi.forceLoc ? 0 : 1;
@@ -542,7 +576,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         for (int k = kstart; k < overlapping.size(); k++) {
                             int j = overlapping.get(k);
                             MarkerInfo mj = entries[j].getValue();
-                            //Log.d("consolidate", "during consolidating " + mj.maxBleat().getMessage());
+                            Log.d("consolidate", "during consolidating " + getMarkerMessages(mj.bleats));
                             bleatList.addAll(Arrays.asList(mj.bleats));
                             if(k > kstart)
                                 entries[j] = null;
