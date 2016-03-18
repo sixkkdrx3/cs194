@@ -27,7 +27,7 @@ public class Start extends Activity {
             @Override
             public void run() {
                 Intent introIntent = new Intent(Start.this, OnboardingActivity.class);
-                startActivity(introIntent);
+                Start.this.startActivity(introIntent);
                 //Intent mainIntent = new Intent(Start.this,MainActivity.class);
                 //Start.this.startActivity(mainIntent);
                 Start.this.finish();

@@ -38,20 +38,28 @@ public class CommentAction {
         this.bid = bid;
     }
 
+    public void handleError() {
+        Log.d("error", "error!!");
+        ((MainActivity)activity).handler.sendEmptyMessage(Constants.CONNECTION_ERROR);
+    }
+
     public Comment saveComment(String message) {
-        String cid = UUID.randomUUID().toString();
-        String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-
         Comment comment = new Comment();
-        comment.setMessage(message);
-        comment.setCID(cid);
-        comment.setBID(bid);
-        comment.setTime(Calendar.getInstance().getTimeInMillis());
-        comment.setAuthorID(id);
-        DataStore.getInstance().updateComments(comment);
-        mapper.save(comment);
+        try {
+            String cid = UUID.randomUUID().toString();
+            String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
 
+            comment.setMessage(message);
+            comment.setCID(cid);
+            comment.setBID(bid);
+            comment.setTime(Calendar.getInstance().getTimeInMillis());
+            comment.setAuthorID(id);
+            DataStore.getInstance().updateComments(comment);
+            mapper.save(comment);
+        } catch (Exception e) {
+            handleError();
+        }
         return comment;
     }
 
