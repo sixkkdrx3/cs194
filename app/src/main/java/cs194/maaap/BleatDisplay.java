@@ -45,8 +45,6 @@ public class BleatDisplay extends Activity {
 
     private LinearLayout scroll;
     private Bleat bleat;
-    public Handler handler;
-    private Handler parentHandler;
 
     public static String getAgeText(long age) {
         if(age < 1000*3600) {
@@ -65,30 +63,6 @@ public class BleatDisplay extends Activity {
         Intent i = getIntent();
 
         String myBID = (String)i.getSerializableExtra("myBID");
-        parentHandler = (Handler)i.getSerializableExtra("parentHandler");
-
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                Log.d("handler", "received message with what = " + msg.what);
-                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(BleatDisplay.this).create();
-                alertDialog.setTitle("No Internet Connection");
-                alertDialog.setMessage("There is no Internet Connection now.");
-                alertDialog.setButton("OK", new DialogInterface.OnClickListener()
-
-                        {
-                            public void onClick(DialogInterface dialog, int which) {
-                                BleatDisplay.this.finish();
-                                // TODO: may need to before previous line
-                                if (parentHandler != null)
-                                    parentHandler.sendEmptyMessage(Constants.CONNECTION_ERROR);
-                            }
-                        }
-
-                );
-                alertDialog.show();
-            }
-        };
 
         bleat = DataStore.getInstance().getBleat(myBID);
         DataStore.getInstance().addSeenBleat(myBID);
