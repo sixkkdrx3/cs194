@@ -150,7 +150,6 @@ public class Achievement {
                 break;
             }
         }
-
         return achievements.toArray(new Achievement[achievements.size()]);
     }
 }
