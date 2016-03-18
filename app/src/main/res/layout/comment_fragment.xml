@@ -4,7 +4,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-    android:minHeight="80dp">
+    android:minHeight="90dp">
 
     <TextView
         android:layout_width="0dp"
@@ -34,6 +34,8 @@
             android:textColor="#ffffff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:paddingBottom="5dp"
             />
 
         <TextView
@@ -47,8 +49,6 @@
             android:textSize="20sp"
             android:fontFamily="sans-serif"
             android:textStyle="bold"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             />
 
         <ImageView
@@ -57,7 +57,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:paddingBottom="15dp"
+            android:paddingTop="5dp"
             />
     </LinearLayout>
 </LinearLayout>
