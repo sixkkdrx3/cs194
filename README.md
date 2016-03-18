@@ -1,5 +1,8 @@
 # cs194
-cs194 software project
+CS194 Software Project
+
+Maaap: A map-based social media platform for posting anonymous, geo-located messages and photos.
+
 
 
 Acknowledgements:
