@@ -324,7 +324,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             lng += (((bleats[0].getBID() + " lng").hashCode() % 1024) - 512) / 1024.0 * 0.005;
         }
 
-        Bitmap markerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.comment_o);
+        Bitmap markerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.chat_bubble);
         MarkerOptions markerOptions = new MarkerOptions().
                 icon(BitmapDescriptorFactory.fromBitmap(markerBitmap)).
                 position(new LatLng(lat, lng)).

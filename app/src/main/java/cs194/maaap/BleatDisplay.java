@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class BleatDisplay extends Activity {
@@ -46,6 +47,16 @@ public class BleatDisplay extends Activity {
     private Bleat bleat;
     public Handler handler;
     private Handler parentHandler;
+
+    public static String getAgeText(long age) {
+        if(age < 1000*3600) {
+            return age/60000 + " min ago";
+        } else if(age < 1000L*3600L*24L) {
+            return age/(3600*1000) + " hrs ago";
+        } else {
+            return age / (24L * 3600L * 1000L) + " days ago";
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +133,10 @@ public class BleatDisplay extends Activity {
             parent.addView(msgPhoto, index);
 
         }
+
+        TextView bleatAge = (TextView) findViewById(R.id.bleat_age);
+        long age = Calendar.getInstance().getTimeInMillis()-bleat.getTime();
+        bleatAge.setText(getAgeText(age));
 
         final ImageView up = (ImageView)findViewById(R.id.up);
         final ImageView down = (ImageView)findViewById(R.id.down);

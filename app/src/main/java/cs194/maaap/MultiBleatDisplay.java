@@ -21,10 +21,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class MultiBleatDisplay extends Activity {
@@ -45,6 +46,21 @@ public class MultiBleatDisplay extends Activity {
 
         ArrayList<Bleat> bleats = new ArrayList<Bleat>();
         for (String bid : myBIDs) bleats.add(DataStore.getInstance().getBleat(bid));
+        Collections.sort(bleats, Collections.reverseOrder(new Comparator<Bleat>() {
+
+
+            @Override
+            public int compare(Bleat bleat1, Bleat bleat2) {
+                if (bleat1.computeNetUpvotes() == bleat2.computeNetUpvotes()) {
+                    return (int) ((bleat1.getTime() - bleat2.getTime())/1000);
+                }
+                else {
+                    return bleat1.computeNetUpvotes() - bleat2.computeNetUpvotes();
+                }
+            }
+        }));
+
+
 
         LinearLayout bleatLayout = (LinearLayout) findViewById(R.id.bleat_scroll_layout);
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -114,6 +130,10 @@ public class MultiBleatDisplay extends Activity {
                 } catch (Exception e) {
                 }
             }
+
+            TextView bleatAge = (TextView) view.findViewById(R.id.bleat_age);
+            long age = Calendar.getInstance().getTimeInMillis()-bleat.getTime();
+            bleatAge.setText(BleatDisplay.getAgeText(age));
 
             final TextView voteText = (TextView)view.findViewById(R.id.num);
             voteText.setText(Integer.toString(bleat.computeNetUpvotes()));
