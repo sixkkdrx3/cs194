@@ -116,6 +116,7 @@ public class UserFragment extends Fragment {
 
                 TextView reputationView = (TextView) v.findViewById(R.id.reputation);
                 reputationView.setText(Integer.toString(reputation));
+                Log.d("reputation", "reputation=" + reputation);
             }
         };
 
