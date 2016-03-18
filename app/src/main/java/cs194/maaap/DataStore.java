@@ -22,6 +22,7 @@ public class DataStore {
     public boolean bleatsDownloaded;
     public boolean commentsDownloaded;
 
+
     public DataStore() {
         downloadedBleats = new HashMap<String, Bleat>();
         downloadedComments = new HashMap<String, Comment>();
