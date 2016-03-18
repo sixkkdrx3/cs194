@@ -35,16 +35,32 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="5dp">
 
-        <TextView
-            android:layout_marginTop="10dp"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_height="match_parent"
-            android:id="@+id/bleat_content"
-            android:textSize="15sp"
-            android:fontFamily="sans-serif"
-            android:background="@null"
-            android:gravity="left"
-            android:layout_weight="0.85"/>
+            android:layout_width="0dp"
+            android:layout_weight="0.85"
+            android:weightSum="1">
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/bleat_content"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif"
+                android:background="@null"
+                android:gravity="left"/>
+            <TextView
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bleat_age"
+                android:textSize="10sp"
+                android:fontFamily="sans-serif"
+                android:background="@null"
+                android:gravity="left"/>
+        </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"

@@ -151,7 +151,7 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
-                intent.putExtra("title","Your bleats");
+                intent.putExtra("title","My Bleats");
                 intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getOwnBleats(id)));
                 parentActivity.startActivity(intent);
             }
@@ -161,7 +161,7 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
-                intent.putExtra("title","Your liked bleats");
+                intent.putExtra("title","Bleats I Liked");
                 intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getVotedBleats(id)));
                 parentActivity.startActivity(intent);
             }
@@ -171,7 +171,7 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(parentActivity, MultiBleatDisplay.class);
-                intent.putExtra("title","Your commented bleats");
+                intent.putExtra("title","Bleats I Commented On");
                 intent.putExtra("myBIDs", Utils.extractBIDs(DataStore.getInstance().getCommentedBleats(id)));
                 parentActivity.startActivity(intent);
             }

@@ -14,17 +14,34 @@
     android:minHeight="100dp"
     android:background="@color/white">
 
-    <TextView
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:id="@+id/bleat_item_text"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-thin"
-        android:background="@null"
-        android:layout_margin="10dp"
-        android:gravity="left|center_vertical"/>
+        android:weightSum="1">
+        <TextView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/bleat_item_text"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif"
+            android:background="@null"
+            android:gravity="left"/>
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bleat_age"
+            android:textSize="10sp"
+            android:fontFamily="sans-serif"
+            android:background="@null"
+            android:gravity="left"/>
+    </LinearLayout>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
             android:layout_width="wrap_content"
