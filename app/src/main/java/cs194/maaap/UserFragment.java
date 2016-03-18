@@ -56,7 +56,7 @@ public class UserFragment extends Fragment {
 
         AsyncTask<Void, Void, Achievement[]> setAchievements = new AsyncTask<Void, Void, Achievement[]>() {
 
-            private int reputation = 0;
+            private int reputation = 10;
 
             @Override
             protected Achievement[] doInBackground(Void... Params) {
