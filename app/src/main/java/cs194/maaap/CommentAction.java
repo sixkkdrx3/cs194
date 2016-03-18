@@ -1,6 +1,10 @@
 package cs194.maaap;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -38,80 +42,113 @@ public class CommentAction {
         this.bid = bid;
     }
 
+    public void handleError() {
+        Log.d("error", "error!!");
+        Intent intent = new Intent(activity.getApplicationContext(), Start.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra("ExitMe", true);
+        activity.startActivity(intent);
+    }
+
+    public void checkOnlineState() {
+        ConnectivityManager cm =
+                (ConnectivityManager)activity.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if(netInfo != null && netInfo.isConnectedOrConnecting()) return;
+        handleError();
+    }
+
     public Comment saveComment(String message) {
-        String cid = UUID.randomUUID().toString();
-        String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-
+        checkOnlineState();
         Comment comment = new Comment();
-        comment.setMessage(message);
-        comment.setCID(cid);
-        comment.setBID(bid);
-        comment.setTime(Calendar.getInstance().getTimeInMillis());
-        comment.setAuthorID(id);
-        DataStore.getInstance().updateComments(comment);
-        mapper.save(comment);
+        try {
+            String cid = UUID.randomUUID().toString();
+            String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
 
+            comment.setMessage(message);
+            comment.setCID(cid);
+            comment.setBID(bid);
+            comment.setTime(Calendar.getInstance().getTimeInMillis());
+            comment.setAuthorID(id);
+            DataStore.getInstance().updateComments(comment);
+            mapper.save(comment);
+        } catch (Exception e) {
+            handleError();
+        }
         return comment;
     }
 
     public boolean upvoteComment(Comment comment) {
-        String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+        checkOnlineState();
+        try {
+            String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
 
-        HashSet<String> upVotes = comment.getUpvotes();
-        HashSet<String> downVotes = comment.getDownvotes();
+            HashSet<String> upVotes = comment.getUpvotes();
+            HashSet<String> downVotes = comment.getDownvotes();
 
-        if (upVotes.contains(id)) { // un-do upvote
-            upVotes.remove(id);
+            if (upVotes.contains(id)) { // un-do upvote
+                upVotes.remove(id);
+                comment.setUpvotes(upVotes);
+                DataStore.getInstance().updateComments(comment);
+                mapper.save(comment);
+                return true;
+            }
+            if (downVotes.contains(id)) {
+                downVotes.remove(id);
+                comment.setDownvotes(downVotes);
+            }
+            upVotes.add(id);
             comment.setUpvotes(upVotes);
             DataStore.getInstance().updateComments(comment);
             mapper.save(comment);
-            return true;
+            return false;
+        } catch (Exception e) {
+            handleError();
+            return false;
         }
-        if (downVotes.contains(id)) {
-            downVotes.remove(id);
-            comment.setDownvotes(downVotes);
-        }
-        upVotes.add(id);
-        comment.setUpvotes(upVotes);
-        DataStore.getInstance().updateComments(comment);
-        mapper.save(comment);
-        return false;
     }
 
     public boolean downvoteComment(Comment comment) {
-        String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+        checkOnlineState();
+        try {
+            String id = Settings.Secure.getString(activity.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
 
-        HashSet<String> upVotes = comment.getUpvotes();
-        HashSet<String> downVotes = comment.getDownvotes();
+            HashSet<String> upVotes = comment.getUpvotes();
+            HashSet<String> downVotes = comment.getDownvotes();
 
-        if (downVotes.contains(id)) { // un-do downvote
-            downVotes.remove(id);
+            if (downVotes.contains(id)) { // un-do downvote
+                downVotes.remove(id);
+                comment.setDownvotes(downVotes);
+                DataStore.getInstance().updateComments(comment);
+                mapper.save(comment);
+                return true;
+            }
+            if (upVotes.contains(id)) {
+                upVotes.remove(id);
+                comment.setUpvotes(upVotes);
+            }
+            downVotes.add(id);
             comment.setDownvotes(downVotes);
             DataStore.getInstance().updateComments(comment);
             mapper.save(comment);
-            return true;
+            return false;
+        } catch (Exception e) {
+            handleError();
+            return false;
         }
-        if (upVotes.contains(id)) {
-            upVotes.remove(id);
-            comment.setUpvotes(upVotes);
-        }
-        downVotes.add(id);
-        comment.setDownvotes(downVotes);
-        DataStore.getInstance().updateComments(comment);
-        mapper.save(comment);
-        return false;
     }
 
     public List<Comment> getComments() {
+        checkOnlineState();
         PaginatedScanList<Comment> result = null;
         try {
             DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
             result = mapper.scan(Comment.class, scanExpression);
-        } catch (Throwable t) {
-            Log.d("error", "ERROR IN COMMENT");
+        } catch (Exception e) {
+            handleError();
         }
         return result;
     }

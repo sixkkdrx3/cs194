@@ -12,7 +12,7 @@
         android:text="Bleat!"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:background="#90C3D4"
+        android:background="?attr/colorPrimary"
         android:textColor="#ffffff"
         android:layout_weight="0"
         />
@@ -181,7 +181,7 @@
             android:textColor="#ffffff"
             android:textStyle="bold"
             android:textSize="12sp"
-            android:background="#90C3D4"
+            android:background="?attr/colorPrimary"
             android:layout_gravity="center"
             android:id="@+id/comment_button"
             />

@@ -2,7 +2,11 @@ package cs194.maaap;
 
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -42,7 +46,7 @@ public class OnboardingActivity extends AppCompatActivity {
     ImageButton mNextBtn;
     Button mSkipBtn, mFinishBtn;
 
-    ImageView zero, one, two;
+    ImageView zero, one, two, three;
     ImageView[] indicators;
 
     int lastLeftValue = 0;
@@ -85,11 +89,12 @@ public class OnboardingActivity extends AppCompatActivity {
         zero = (ImageView) findViewById(R.id.intro_indicator_0);
         one = (ImageView) findViewById(R.id.intro_indicator_1);
         two = (ImageView) findViewById(R.id.intro_indicator_2);
+        three = (ImageView) findViewById(R.id.intro_indicator_3);
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.main_content);
 
 
-        indicators = new ImageView[]{zero, one, two};
+        indicators = new ImageView[]{zero, one, two, three};
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -98,23 +103,14 @@ public class OnboardingActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(page);
         updateIndicators(page);
 
-        final int color1 = ContextCompat.getColor(this, R.color.cyan);
-        final int color2 = ContextCompat.getColor(this, R.color.orange);
-        final int color3 = ContextCompat.getColor(this, R.color.green);
-
-        final int[] colorList = new int[]{color1, color2, color3};
-
         final ArgbEvaluator evaluator = new ArgbEvaluator();
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-                /*
-                color update
-                 */
-                int colorUpdate = (Integer) evaluator.evaluate(positionOffset, colorList[position], colorList[position == 2 ? position : position + 1]);
-                mViewPager.setBackgroundColor(colorUpdate);
+                //mViewPager.setBackgroundColor(colorUpdate);
+                //mViewPager.setBackgroundResource(R.drawable.landscape);
 
             }
 
@@ -125,7 +121,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
                 updateIndicators(page);
 
-                switch (position) {
+                /*switch (position) {
                     case 0:
                         mViewPager.setBackgroundColor(color1);
                         break;
@@ -135,11 +131,11 @@ public class OnboardingActivity extends AppCompatActivity {
                     case 2:
                         mViewPager.setBackgroundColor(color3);
                         break;
-                }
+                }*/
 
 
-                mNextBtn.setVisibility(position == 2 ? View.GONE : View.VISIBLE);
-                mFinishBtn.setVisibility(position == 2 ? View.VISIBLE : View.GONE);
+                mNextBtn.setVisibility(position == 3 ? View.GONE : View.VISIBLE);
+                mFinishBtn.setVisibility(position == 3 ? View.VISIBLE : View.GONE);
 
 
             }
@@ -231,8 +227,6 @@ public class OnboardingActivity extends AppCompatActivity {
 
         ImageView img;
 
-        int[] bgs = new int[]{R.drawable.ic_flight_24dp, R.drawable.ic_mail_24dp, R.drawable.ic_explore_24dp};
-
         public PlaceholderFragment() {
         }
 
@@ -253,11 +247,33 @@ public class OnboardingActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_onboarding, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            TextView descriptionView = (TextView) rootView.findViewById(R.id.section_description);
+            int pageNum = getArguments().getInt(ARG_SECTION_NUMBER);
+            Bitmap bm;
 
-            img = (ImageView) rootView.findViewById(R.id.section_img);
-            img.setBackgroundResource(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
+            descriptionView.setText("what's happening around - on a map");
+            if (pageNum == 1) {
+                textView.setText("DISCOVER");
+                descriptionView.setText("what's happening around");
+                bm = BitmapFactory.decodeResource(getResources(), R.drawable.landscape);
+            } else if (pageNum == 2) {
+                textView.setText("BLEAT");
+                descriptionView.setText("what you see and feel");
+                bm = BitmapFactory.decodeResource(getResources(), R.drawable.landscape2);
+            } else if (pageNum == 3) {
+                textView.setText("SHARE");
+                descriptionView.setText("your opinions with others");
+                bm = BitmapFactory.decodeResource(getResources(), R.drawable.landscape3);
+            } else {
+                textView.setText("REMEMBER");
+                descriptionView.setText("your best Maaap adventures");
+                bm = BitmapFactory.decodeResource(getResources(), R.drawable.landscape4);
+            }
 
+            img = (ImageView) rootView.findViewById(R.id.background_img);
+
+            Drawable d = new BitmapDrawable(getResources(), bm);
+            img.setImageDrawable(d);
 
             return rootView;
         }
@@ -286,8 +302,8 @@ public class OnboardingActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Show 4 total pages.
+            return 4;
         }
 
         @Override
@@ -299,6 +315,8 @@ public class OnboardingActivity extends AppCompatActivity {
                     return "SECTION 2";
                 case 2:
                     return "SECTION 3";
+                case 3:
+                    return "SECTION 4";
             }
             return null;
         }

@@ -216,6 +216,8 @@ public class BleatDisplay extends Activity {
                     } catch (Exception e) {
                     }
                 }
+                Toast.makeText(BleatDisplay.this, "Comment Successful!",
+                        Toast.LENGTH_LONG).show();
                 tv.setText("");
                 InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 in.hideSoftInputFromWindow(tv.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);

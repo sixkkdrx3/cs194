@@ -1,6 +1,7 @@
 package cs194.maaap;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,35 +20,10 @@ import com.amazonaws.mobileconnectors.cognito.exceptions.NetworkException;
 public class MainActivity extends AppCompatActivity {
 
     public PagerAdapter adapter;
-    public Handler handler;
-    //private Handler parentHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Set up handler
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                Log.d("handler", "received message with what = " + msg.what);
-                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle("No Internet Connection");
-                alertDialog.setMessage("There is no Internet Connection now.");
-                alertDialog.setButton("OK", new DialogInterface.OnClickListener()
-
-                        {
-                            public void onClick(DialogInterface dialog, int which) {
-                                MainActivity.this.finish();
-                                // TODO: may need to before previous line
-                               // parentHandler.sendEmptyMessage(Constants.CONNECTION_ERROR);
-                            }
-                        }
-
-                );
-                alertDialog.show();
-            }
-        };
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
