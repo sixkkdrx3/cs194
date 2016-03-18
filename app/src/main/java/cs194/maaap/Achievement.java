@@ -89,7 +89,7 @@ public class Achievement {
         if(max_distance >= 200) { //world traveller
             int[] thresholds = {200, 500, 1000, 2000, 5000, 7500, 10000};
             int threshold = getThreshold(thresholds, (int) max_distance);
-            achievements.add(new Achievement(R.drawable.globe, "Globetrotter", "Bleated " + max_distance + " miles away", threshold));
+            achievements.add(new Achievement(R.drawable.globe, "Globetrotter", "Bleated " + threshold + " miles away", threshold));
         }
 
         long current_time = Calendar.getInstance().getTimeInMillis();
